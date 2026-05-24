@@ -433,26 +433,145 @@
             to { transform: translateX(100%); opacity: 0; }
         }
 
-        /* Responsive */
+        /* ── Mobile Responsive ──────────────────────────────────── */
         @media (max-width: 768px) {
+
+            /* Header */
+            header {
+                padding: 1rem 1.2rem;
+            }
+            h1 {
+                font-size: 1.3rem;
+            }
+            .logo-icon {
+                font-size: 1.6rem;
+            }
+
+            /* Main padding */
+            main {
+                padding: 1.5rem 1rem;
+                gap: 1.2rem;
+            }
+
+            /* Search input – stack button below input on mobile */
+            .input-wrapper {
+                max-width: 100%;
+            }
+            input {
+                padding: 1rem 1.2rem 1rem 3.5rem;
+                font-size: 1rem;
+                border-radius: 16px;
+            }
+            .input-icon {
+                left: 1rem;
+                font-size: 1.2rem;
+            }
             .btn-extract {
                 position: static;
                 transform: none;
                 width: 100%;
-                margin-top: 1rem;
+                margin-top: 0.8rem;
                 justify-content: center;
+                padding: 0.9rem 1.5rem;
+                border-radius: 14px;
+                font-size: 1rem;
             }
-            input {
-                padding-right: 1.5rem;
+            .btn-extract:disabled {
+                transform: none;
             }
+
+            /* Results header – stack vertically */
             .results-header {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 0.8rem;
             }
+            .results-info {
+                flex-wrap: wrap;
+                gap: 0.6rem;
+                width: 100%;
+            }
+            .channel-badge {
+                font-size: 0.85rem;
+                padding: 0.3rem 0.8rem;
+            }
+
+            /* Action buttons – fill row on mobile */
+            .actions {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 0.5rem;
+            }
+            .btn-action {
+                justify-content: center;
+                padding: 0.7rem 0.5rem;
+                font-size: 0.82rem;
+                border-radius: 10px;
+            }
+
+            /* Video grid – single column on phones */
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            /* Card touch targets */
+            .btn-icon {
+                padding: 0.7rem 0.5rem;
+                font-size: 0.9rem;
+                min-height: 44px;
+            }
+
+            /* Toast – full width at bottom */
             .toast-container {
                 bottom: 1rem;
-                right: 1rem;
-                left: 1rem;
+                right: 0.8rem;
+                left: 0.8rem;
+            }
+            .toast {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            /* Landing sections */
+            .landing-section h2 {
+                font-size: 1.6rem;
+                margin-bottom: 1.5rem;
+            }
+            .features-grid,
+            .use-cases-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .feature-card,
+            .use-case-card {
+                padding: 1.3rem;
+            }
+            .social-proof {
+                gap: 1.2rem;
+                padding: 1.5rem 1rem;
+            }
+            .stat {
+                font-size: 0.95rem;
+            }
+            .step {
+                padding: 1rem;
+                gap: 1rem;
+            }
+            .footer-cta h2 {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Extra small screens (< 400px) */
+        @media (max-width: 400px) {
+            h1 { font-size: 1.1rem; }
+            .actions {
+                grid-template-columns: 1fr 1fr;
+            }
+            .btn-action:last-child {
+                grid-column: 1 / -1;
             }
         }
         /* Landing Page Styles */
