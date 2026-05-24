@@ -390,6 +390,11 @@
             background: rgba(157, 78, 221, 0.1);
         }
 
+        .btn-icon.download:hover {
+            color: #00e676;
+            background: rgba(0, 230, 118, 0.1);
+        }
+
         /* Toast Notification */
         .toast-container {
             position: fixed;
@@ -1103,6 +1108,9 @@
                                 </button>
                                 <a href="${vid.url}" target="_blank" rel="noopener noreferrer" class="btn-icon open" style="text-decoration:none;" title="Open in YouTube">
                                     <i class="ph ph-arrow-square-out"></i> Open
+                                </a>
+                                <a href="https://cobalt.tools" target="_blank" rel="noopener noreferrer" class="btn-icon download" style="text-decoration:none;" title="Download Video" onclick="navigator.clipboard.writeText('${vid.url}')">
+                                    <i class="ph ph-download-simple"></i> Download
                                 </a>
                             </div>
                         </div>
