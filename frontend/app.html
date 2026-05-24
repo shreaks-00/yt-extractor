@@ -36,6 +36,8 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            /* Prevent mobile pull-to-refresh from killing in-flight requests */
+            overscroll-behavior-y: none;
         }
 
         /* Background Effects */
@@ -839,7 +841,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        const API_URL = '/extract';
+        const API_URL = 'https://yt-extractor-backend.onrender.com/extract';
         const HEALTH_URL = 'https://yt-extractor-backend.onrender.com/health';
 
         // Wake up the Render backend immediately on page load (free tier goes to sleep)
@@ -872,6 +874,7 @@
 
                 this.bindEvents();
                 this.checkServerReady();
+                this.restoreCachedResults();
             }
 
             async checkServerReady() {
@@ -881,6 +884,20 @@
                 } catch (_) {
                     this.serverReady = false;
                 }
+            }
+
+            // Restore results if page was accidentally refreshed mid-session
+            restoreCachedResults() {
+                try {
+                    const cached = sessionStorage.getItem('ytExtractorLastResult');
+                    if (cached) {
+                        const data = JSON.parse(cached);
+                        this.currentData = data;
+                        this.renderResults(data);
+                        this.searchContainer.classList.add('active');
+                        this.showToast(`Restored ${data.videos.length} videos from last session.`, 'info');
+                    }
+                } catch (_) {}
             }
 
             bindEvents() {
@@ -978,6 +995,8 @@
 
                     this.currentData = data;
                     this.renderResults(data);
+                    // Cache results in sessionStorage so a page refresh doesn't lose everything
+                    try { sessionStorage.setItem('ytExtractorLastResult', JSON.stringify(data)); } catch (_) {}
                     this.showToast(`Successfully extracted ${data.videos.length} videos!`, 'success');
                     
                     // Layout change
