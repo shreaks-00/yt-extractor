@@ -641,6 +641,39 @@
             font-size: 1.2rem;
             margin: 0 auto;
         }
+
+        /* ── Mobile Responsive ──────────────────────────────────── */
+        @media (max-width: 768px) {
+            header { padding: 1rem; }
+            h1 { font-size: 1.3rem; }
+            .logo-icon { font-size: 1.6rem; }
+
+            main { padding: 4vh 1rem; }
+            main h2 { font-size: 2.2rem !important; margin-bottom: 1rem !important; }
+            main p { font-size: 1rem !important; margin-bottom: 2rem !important; }
+            
+            .btn-extract { width: 100%; justify-content: center; padding: 1rem !important; font-size: 1.1rem !important; border-radius: 14px; }
+            
+            .landing-section h2 { font-size: 1.6rem; margin-bottom: 1.5rem; }
+            .features-grid, .use-cases-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .feature-card, .use-case-card { padding: 1.3rem; }
+            
+            .social-proof { gap: 1rem; padding: 1.2rem 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+            .stat { font-size: 0.95rem; }
+            
+            .step { padding: 1.2rem; gap: 1rem; flex-direction: column; align-items: center; text-align: center; }
+            .step-content h3 { font-size: 1.2rem; }
+            
+            .faq-grid { gap: 0.8rem; }
+            .faq-item { padding: 1.2rem; }
+            
+            .footer-cta { padding: 3rem 1rem; margin-top: 2rem; }
+            .footer-cta h2 { font-size: 1.6rem; }
+        }
+
+        @media (max-width: 400px) {
+            main h2 { font-size: 1.8rem !important; }
+        }
     </style>
 </head>
 <body>
