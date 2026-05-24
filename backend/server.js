@@ -29,11 +29,9 @@ app.use('/extract', limiter);
 // ─── Input sanitizer ──────────────────────────────────────────────────────────
 function sanitizeChannelInput(input) {
   if (!input || typeof input !== 'string') return null;
-  const trimmed = input.trim();
+  // Remove invisible characters that mobile clipboards sometimes add
+  const trimmed = input.replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
   if (trimmed.length === 0 || trimmed.length > 200) return null;
-  // Allow safe chars: letters, digits, spaces, and URL characters (@, /, ., -, _, :, ?, =, &, %, +)
-  const safe = /^[a-zA-Z0-9@\/\.\-\_\:\?=\&\%\+\s]+$/;
-  if (!safe.test(trimmed)) return null;
   return trimmed;
 }
 
@@ -46,11 +44,16 @@ function resolveChannelUrl(input) {
 
   // Already a full URL
   if (normalizedInput.startsWith('https://') || normalizedInput.startsWith('http://')) {
-    // Ensure it points to /videos
     const url = new URL(normalizedInput);
-    if (!url.hostname.includes('youtube.com')) {
+    if (!url.hostname.includes('youtube.com') && !url.hostname.includes('youtu.be')) {
       throw new Error('Only YouTube URLs are supported.');
     }
+    
+    // Check if user accidentally pasted a video link instead of a channel
+    if (url.pathname.startsWith('/watch') || url.hostname === 'youtu.be' || url.pathname.startsWith('/shorts')) {
+      throw new Error('Please enter a YouTube Channel URL, not a specific video URL.');
+    }
+
     const path = url.pathname.endsWith('/videos')
       ? url.pathname
       : url.pathname.replace(/\/$/, '') + '/videos';

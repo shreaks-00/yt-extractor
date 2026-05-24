@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: yt-extractor-backend
+    env: docker
+    rootDir: backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ALLOWED_ORIGIN
+        value: "*" # Update this to your frontend URL later for better security

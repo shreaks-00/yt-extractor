@@ -653,18 +653,58 @@
         </div>
     </header>
 
-    <main style="align-items: center; justify-content: center; text-align: center; padding-top: 8vh; padding-bottom: 0;">
-        <div style="max-width: 800px; margin: 0 auto;">
-            <h2 style="font-size: 3.5rem; line-height: 1.2; margin-bottom: 1.5rem;">Extract Every YouTube Video Instantly. Zero Limits.</h2>
-            <p style="color: var(--text-muted); font-size: 1.2rem; line-height: 1.6; margin-bottom: 2.5rem;">The ultimate scraping tool to pull all video links and metadata from any YouTube channel in seconds. Free forever, with no signup required.</p>
-            <a href="app.html" class="btn-extract" style="position: static; transform: none; display: inline-flex; padding: 1.2rem 3rem; font-size: 1.2rem; text-decoration: none;">
-                <span>Start Extracting Now</span>
-                <i class="ph-bold ph-arrow-right"></i>
-            </a>
+    <main>
+        <div class="search-container" id="searchContainer">
+            <div class="input-wrapper">
+                <i class="ph ph-magnifying-glass input-icon"></i>
+                <input type="text" id="channelInput" placeholder="Enter YouTube channel name or URL (e.g. @mkbhd)" autocomplete="off" spellcheck="false">
+                <button class="btn-extract" id="extractBtn">
+                    <span>Extract</span>
+                    <i class="ph-bold ph-arrow-right"></i>
+                    <div class="spinner" id="btnSpinner"></div>
+                </button>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center;">
+                Instantly extract all public video links from any YouTube channel.
+            </p>
+        </div>
+
+        <div class="results-container" id="resultsContainer">
+            <div class="results-header">
+                <div class="results-info">
+                    <div class="channel-badge">
+                        <i class="ph-fill ph-check-circle"></i>
+                        <span id="channelNameDisplay">@channel</span>
+                    </div>
+                    <span style="color: var(--text-muted); font-size: 0.95rem;">
+                        <span id="videoCountDisplay">0</span> videos found
+                    </span>
+                </div>
+                <div class="actions">
+                    <button class="btn-action" id="copyAllBtn">
+                        <i class="ph ph-copy"></i> Copy All
+                    </button>
+                    <button class="btn-action" id="saveTxtBtn">
+                        <i class="ph ph-file-text"></i> Save TXT
+                    </button>
+                    <button class="btn-action" id="saveJsonBtn">
+                        <i class="ph ph-code"></i> JSON
+                    </button>
+                </div>
+            </div>
+
+            <div class="video-grid" id="videoGrid">
+                <!-- Video cards will be injected here -->
+            </div>
         </div>
     </main>
 
-    <div class="landing-content" style="margin-top: 0;">
+    <div class="landing-content">
+        <!-- Hero text injected in the header context -->
+        <div style="text-align: center; max-width: 800px; margin: 0 auto -2rem auto; padding: 0 1.5rem;">
+            <h2 style="font-size: 3rem; line-height: 1.2; margin-bottom: 1rem;">Extract Every YouTube Video Instantly. Zero Limits.</h2>
+            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem;">The ultimate scraping tool to pull all video links and metadata from any YouTube channel in seconds. Free forever, with no signup required.</p>
+        </div>
 
         <section class="social-proof">
             <div class="stat"><i class="ph-fill ph-lightning"></i> Instant Extraction</div>
@@ -789,13 +829,208 @@
 
         <section class="footer-cta">
             <h2>Stop manually copying links. Get your data instantly.</h2>
-            <a href="app.html" class="btn-extract" style="text-decoration:none;">
+            <button class="btn-extract" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                 <span>Start Extracting Now</span>
-                <i class="ph-bold ph-arrow-right"></i>
-            </a>
+                <i class="ph-bold ph-arrow-up"></i>
+            </button>
         </section>
     </div>
-</body>
-</html>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        const API_URL = '/extract';
+
+        class ExtractorApp {
+            constructor() {
+                this.input = document.getElementById('channelInput');
+                this.extractBtn = document.getElementById('extractBtn');
+                this.btnText = this.extractBtn.querySelector('span');
+                this.btnIcon = this.extractBtn.querySelector('.ph-arrow-right');
+                this.spinner = document.getElementById('btnSpinner');
+                
+                this.searchContainer = document.getElementById('searchContainer');
+                this.resultsContainer = document.getElementById('resultsContainer');
+                this.videoGrid = document.getElementById('videoGrid');
+                
+                this.channelDisplay = document.getElementById('channelNameDisplay');
+                this.countDisplay = document.getElementById('videoCountDisplay');
+                this.toastContainer = document.getElementById('toastContainer');
+
+                this.copyAllBtn = document.getElementById('copyAllBtn');
+                this.saveTxtBtn = document.getElementById('saveTxtBtn');
+                this.saveJsonBtn = document.getElementById('saveJsonBtn');
+
+                this.currentData = null;
+
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                this.extractBtn.addEventListener('click', () => this.handleExtract());
+                this.input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleExtract();
+                });
+
+                // Header actions
+                this.copyAllBtn.addEventListener('click', () => this.copyAllLinks());
+                this.saveTxtBtn.addEventListener('click', () => this.downloadTxt());
+                this.saveJsonBtn.addEventListener('click', () => this.exportJson());
+
+                // Individual card actions (using event delegation)
+                this.videoGrid.addEventListener('click', (e) => {
+                    const copyBtn = e.target.closest('.copy');
+                    if (copyBtn) {
+                        const url = copyBtn.getAttribute('data-url');
+                        if (url) {
+                            this.copyToClipboard(url);
+                        }
+                    }
+                });
+            }
+
+            setLoading(isLoading) {
+                this.extractBtn.disabled = isLoading;
+                if (isLoading) {
+                    this.btnText.textContent = 'Extracting...';
+                    this.btnIcon.style.display = 'none';
+                    this.spinner.style.display = 'block';
+                } else {
+                    this.btnText.textContent = 'Extract';
+                    this.btnIcon.style.display = 'block';
+                    this.spinner.style.display = 'none';
+                }
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                let iconClass = 'ph-info';
+                if (type === 'success') iconClass = 'ph-check-circle';
+                if (type === 'error') iconClass = 'ph-warning-circle';
+
+                toast.innerHTML = `
+                    <i class="ph-fill ${iconClass}"></i>
+                    <span>${message}</span>
+                `;
+
+                this.toastContainer.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.animation = 'slideOut 0.3s ease forwards';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
+            async handleExtract() {
+                const query = this.input.value.trim();
+                if (!query) {
+                    this.showToast('Please enter a channel name or URL', 'error');
+                    this.input.focus();
+                    return;
+                }
+
+                this.setLoading(true);
+                this.resultsContainer.style.display = 'none';
+
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ channel: query })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to extract videos');
+                    }
+
+                    this.currentData = data;
+                    this.renderResults(data);
+                    this.showToast(`Successfully extracted ${data.videos.length} videos!`, 'success');
+                    
+                    // Layout change
+                    this.searchContainer.classList.add('active');
+
+                } catch (error) {
+                    this.showToast(error.message, 'error');
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+
+            renderResults(data) {
+                this.channelDisplay.textContent = data.channel;
+                this.countDisplay.textContent = data.count;
+                
+                this.videoGrid.innerHTML = data.videos.map((vid, index) => `
+                    <div class="video-card" style="animation-delay: ${index * 0.05}s">
+                        <div class="thumbnail-container">
+                            <img src="${vid.thumbnail || 'https://via.placeholder.com/320x180?text=No+Thumbnail'}" alt="${vid.title}" class="thumbnail" loading="lazy">
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title" title="${vid.title}">${vid.title}</h3>
+                            <div class="card-actions">
+                                <button class="btn-icon copy" data-url="${vid.url}" title="Copy URL">
+                                    <i class="ph ph-copy"></i> Copy
+                                </button>
+                                <a href="${vid.url}" target="_blank" rel="noopener noreferrer" class="btn-icon open" style="text-decoration:none;" title="Open in YouTube">
+                                    <i class="ph ph-arrow-square-out"></i> Open
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                this.resultsContainer.style.display = 'flex';
+            }
+
+            async copyToClipboard(text) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    this.showToast('Link copied to clipboard!', 'success');
+                } catch (err) {
+                    this.showToast('Failed to copy text', 'error');
+                }
+            }
+
+            copyAllLinks() {
+                if (!this.currentData) return;
+                const links = this.currentData.videos.map(v => v.url).join('\n');
+                this.copyToClipboard(links);
+                this.showToast(`Copied ${this.currentData.videos.length} links!`, 'success');
+            }
+
+            downloadTxt() {
+                if (!this.currentData) return;
+                const content = this.currentData.videos.map(v => `${v.title}\n${v.url}\n`).join('\n');
+                this.downloadFile(content, `${this.currentData.channel}_links.txt`, 'text/plain');
+            }
+
+            exportJson() {
+                if (!this.currentData) return;
+                const content = JSON.stringify(this.currentData, null, 2);
+                this.downloadFile(content, `${this.currentData.channel}_data.json`, 'application/json');
+            }
+
+            downloadFile(content, filename, contentType) {
+                const blob = new Blob([content], { type: contentType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                this.showToast(`Downloaded ${filename}`, 'success');
+            }
+        }
+
+        // Initialize App
+        const app = new ExtractorApp();
+    </script>
 </body>
 </html>
