@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Channel Video Extractor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --surface-color: rgba(20, 20, 25, 0.7);
+            --surface-hover: rgba(30, 30, 38, 0.9);
+            --primary: #9d4edd;
+            --primary-glow: rgba(157, 78, 221, 0.5);
+            --secondary: #e0aaff;
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --danger: #ff4d4d;
+            --success: #00e676;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(12px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        .bg-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 80vw;
+            height: 80vh;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 60%);
+            opacity: 0.15;
+            z-index: -1;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.3;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Layout */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            filter: drop-shadow(0 0 10px var(--primary-glow));
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, #fff, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Input Section */
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 2vh;
+            transition: margin 0.5s ease;
+        }
+
+        .search-container.active {
+            margin-top: 0;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 1.2rem 1.5rem 1.2rem 4rem;
+            font-size: 1.1rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--surface-color);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: var(--glass-blur);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow), inset 0 0 10px rgba(157, 78, 221, 0.1);
+            background: var(--surface-hover);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn-extract {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--primary), #7b2cbf);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-extract:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .btn-extract:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: translateY(-50%);
+            box-shadow: none;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Results Area */
+        .results-container {
+            display: none;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .results-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .channel-badge {
+            background: rgba(157, 78, 221, 0.15);
+            border: 1px solid var(--primary-glow);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: var(--surface-color);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .btn-action:hover {
+            background: var(--surface-hover);
+            border-color: var(--text-muted);
+            transform: translateY(-2px);
+        }
+
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .video-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(157, 78, 221, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(157, 78, 221, 0.2);
+        }
+
+        .thumbnail-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .video-card:hover .thumbnail {
+            transform: scale(1.05);
+        }
+
+        .video-info {
+            padding: 1.2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .video-title {
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--text-main);
+        }
+
+        .card-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .btn-icon.copy:hover {
+            color: var(--success);
+            background: rgba(0, 230, 118, 0.1);
+        }
+
+        .btn-icon.open:hover {
+            color: var(--primary);
+            background: rgba(157, 78, 221, 0.1);
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: var(--surface-color);
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: var(--glass-blur);
+            animation: slideIn 0.3s ease forwards;
+            font-weight: 500;
+        }
+
+        .toast.success { border-color: var(--success); }
+        .toast.error { border-color: var(--danger); }
+        
+        .toast i { font-size: 1.2rem; }
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+        .toast.info i { color: var(--primary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .btn-extract {
+                position: static;
+                transform: none;
+                width: 100%;
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            input {
+                padding-right: 1.5rem;
+            }
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .toast-container {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="grid-bg"></div>
+
+    <header>
+        <div class="header-content">
+            <i class="ph-fill ph-youtube-logo logo-icon"></i>
+            <h1>Extractor Pro</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="search-container" id="searchContainer">
+            <div class="input-wrapper">
+                <i class="ph ph-magnifying-glass input-icon"></i>
+                <input type="text" id="channelInput" placeholder="Enter YouTube channel name or URL (e.g. @mkbhd)" autocomplete="off" spellcheck="false">
+                <button class="btn-extract" id="extractBtn">
+                    <span>Extract</span>
+                    <i class="ph-bold ph-arrow-right"></i>
+                    <div class="spinner" id="btnSpinner"></div>
+                </button>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center;">
+                Instantly extract all public video links from any YouTube channel.
+            </p>
+        </div>
+
+        <div class="results-container" id="resultsContainer">
+            <div class="results-header">
+                <div class="results-info">
+                    <div class="channel-badge">
+                        <i class="ph-fill ph-check-circle"></i>
+                        <span id="channelNameDisplay">@channel</span>
+                    </div>
+                    <span style="color: var(--text-muted); font-size: 0.95rem;">
+                        <span id="videoCountDisplay">0</span> videos found
+                    </span>
+                </div>
+                <div class="actions">
+                    <button class="btn-action" id="copyAllBtn">
+                        <i class="ph ph-copy"></i> Copy All
+                    </button>
+                    <button class="btn-action" id="saveTxtBtn">
+                        <i class="ph ph-file-text"></i> Save TXT
+                    </button>
+                    <button class="btn-action" id="saveJsonBtn">
+                        <i class="ph ph-code"></i> JSON
+                    </button>
+                </div>
+            </div>
+
+            <div class="video-grid" id="videoGrid">
+                <!-- Video cards will be injected here -->
+            </div>
+        </div>
+    </main>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        const API_URL = '/extract';
+
+        class ExtractorApp {
+            constructor() {
+                this.input = document.getElementById('channelInput');
+                this.extractBtn = document.getElementById('extractBtn');
+                this.btnText = this.extractBtn.querySelector('span');
+                this.btnIcon = this.extractBtn.querySelector('.ph-arrow-right');
+                this.spinner = document.getElementById('btnSpinner');
+                
+                this.searchContainer = document.getElementById('searchContainer');
+                this.resultsContainer = document.getElementById('resultsContainer');
+                this.videoGrid = document.getElementById('videoGrid');
+                
+                this.channelDisplay = document.getElementById('channelNameDisplay');
+                this.countDisplay = document.getElementById('videoCountDisplay');
+                this.toastContainer = document.getElementById('toastContainer');
+
+                this.copyAllBtn = document.getElementById('copyAllBtn');
+                this.saveTxtBtn = document.getElementById('saveTxtBtn');
+                this.saveJsonBtn = document.getElementById('saveJsonBtn');
+
+                this.currentData = null;
+
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                this.extractBtn.addEventListener('click', () => this.handleExtract());
+                this.input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleExtract();
+                });
+
+                // Header actions
+                this.copyAllBtn.addEventListener('click', () => this.copyAllLinks());
+                this.saveTxtBtn.addEventListener('click', () => this.downloadTxt());
+                this.saveJsonBtn.addEventListener('click', () => this.exportJson());
+
+                // Individual card actions (using event delegation)
+                this.videoGrid.addEventListener('click', (e) => {
+                    const copyBtn = e.target.closest('.copy');
+                    if (copyBtn) {
+                        const url = copyBtn.getAttribute('data-url');
+                        if (url) {
+                            this.copyToClipboard(url);
+                        }
+                    }
+                });
+            }
+
+            setLoading(isLoading) {
+                this.extractBtn.disabled = isLoading;
+                if (isLoading) {
+                    this.btnText.textContent = 'Extracting...';
+                    this.btnIcon.style.display = 'none';
+                    this.spinner.style.display = 'block';
+                } else {
+                    this.btnText.textContent = 'Extract';
+                    this.btnIcon.style.display = 'block';
+                    this.spinner.style.display = 'none';
+                }
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                let iconClass = 'ph-info';
+                if (type === 'success') iconClass = 'ph-check-circle';
+                if (type === 'error') iconClass = 'ph-warning-circle';
+
+                toast.innerHTML = `
+                    <i class="ph-fill ${iconClass}"></i>
+                    <span>${message}</span>
+                `;
+
+                this.toastContainer.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.animation = 'slideOut 0.3s ease forwards';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
+            async handleExtract() {
+                const query = this.input.value.trim();
+                if (!query) {
+                    this.showToast('Please enter a channel name or URL', 'error');
+                    this.input.focus();
+                    return;
+                }
+
+                this.setLoading(true);
+                this.resultsContainer.style.display = 'none';
+
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ channel: query })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to extract videos');
+                    }
+
+                    this.currentData = data;
+                    this.renderResults(data);
+                    this.showToast(`Successfully extracted ${data.videos.length} videos!`, 'success');
+                    
+                    // Layout change
+                    this.searchContainer.classList.add('active');
+
+                } catch (error) {
+                    this.showToast(error.message, 'error');
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+
+            renderResults(data) {
+                this.channelDisplay.textContent = data.channel;
+                this.countDisplay.textContent = data.count;
+                
+                this.videoGrid.innerHTML = data.videos.map((vid, index) => `
+                    <div class="video-card" style="animation-delay: ${index * 0.05}s">
+                        <div class="thumbnail-container">
+                            <img src="${vid.thumbnail || 'https://via.placeholder.com/320x180?text=No+Thumbnail'}" alt="${vid.title}" class="thumbnail" loading="lazy">
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title" title="${vid.title}">${vid.title}</h3>
+                            <div class="card-actions">
+                                <button class="btn-icon copy" data-url="${vid.url}" title="Copy URL">
+                                    <i class="ph ph-copy"></i> Copy
+                                </button>
+                                <a href="${vid.url}" target="_blank" rel="noopener noreferrer" class="btn-icon open" style="text-decoration:none;" title="Open in YouTube">
+                                    <i class="ph ph-arrow-square-out"></i> Open
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                this.resultsContainer.style.display = 'flex';
+            }
+
+            async copyToClipboard(text) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    this.showToast('Link copied to clipboard!', 'success');
+                } catch (err) {
+                    this.showToast('Failed to copy text', 'error');
+                }
+            }
+
+            copyAllLinks() {
+                if (!this.currentData) return;
+                const links = this.currentData.videos.map(v => v.url).join('\n');
+                this.copyToClipboard(links);
+                this.showToast(`Copied ${this.currentData.videos.length} links!`, 'success');
+            }
+
+            downloadTxt() {
+                if (!this.currentData) return;
+                const content = this.currentData.videos.map(v => `${v.title}\n${v.url}\n`).join('\n');
+                this.downloadFile(content, `${this.currentData.channel}_links.txt`, 'text/plain');
+            }
+
+            exportJson() {
+                if (!this.currentData) return;
+                const content = JSON.stringify(this.currentData, null, 2);
+                this.downloadFile(content, `${this.currentData.channel}_data.json`, 'application/json');
+            }
+
+            downloadFile(content, filename, contentType) {
+                const blob = new Blob([content], { type: contentType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                this.showToast(`Downloaded ${filename}`, 'success');
+            }
+        }
+
+        // Initialize App
+        const app = new ExtractorApp();
+    </script>
+</body>
+</html>
