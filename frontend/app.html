@@ -437,143 +437,95 @@
         @media (max-width: 768px) {
 
             /* Header */
-            header {
-                padding: 1rem 1.2rem;
-            }
-            h1 {
-                font-size: 1.3rem;
-            }
-            .logo-icon {
-                font-size: 1.6rem;
-            }
+            header { padding: 0.8rem 1rem; }
+            h1 { font-size: 1.25rem; }
+            .logo-icon { font-size: 1.5rem; }
 
-            /* Main padding */
-            main {
-                padding: 1.5rem 1rem;
-                gap: 1.2rem;
-            }
+            /* Main */
+            main { padding: 1.2rem 1rem; gap: 1rem; }
 
-            /* Search input – stack button below input on mobile */
-            .input-wrapper {
-                max-width: 100%;
-            }
+            /* Search */
+            .search-container { gap: 0.8rem; margin-top: 0.5rem; }
+            .input-wrapper { max-width: 100%; }
             input {
-                padding: 1rem 1.2rem 1rem 3.5rem;
-                font-size: 1rem;
-                border-radius: 16px;
-            }
-            .input-icon {
-                left: 1rem;
-                font-size: 1.2rem;
-            }
-            .btn-extract {
-                position: static;
-                transform: none;
-                width: 100%;
-                margin-top: 0.8rem;
-                justify-content: center;
-                padding: 0.9rem 1.5rem;
+                padding: 0.9rem 1rem 0.9rem 3.2rem;
+                font-size: 0.95rem;
                 border-radius: 14px;
-                font-size: 1rem;
             }
-            .btn-extract:disabled {
-                transform: none;
-            }
-
-            /* Results header – stack vertically */
-            .results-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.8rem;
-            }
-            .results-info {
-                flex-wrap: wrap;
-                gap: 0.6rem;
+            .input-icon { left: 0.9rem; font-size: 1.1rem; }
+            .btn-extract {
+                position: static !important;
+                transform: none !important;
                 width: 100%;
-            }
-            .channel-badge {
-                font-size: 0.85rem;
-                padding: 0.3rem 0.8rem;
-            }
-
-            /* Action buttons – fill row on mobile */
-            .actions {
-                width: 100%;
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 0.5rem;
-            }
-            .btn-action {
+                margin-top: 0.6rem;
                 justify-content: center;
-                padding: 0.7rem 0.5rem;
-                font-size: 0.82rem;
-                border-radius: 10px;
-            }
-
-            /* Video grid – single column on phones */
-            .video-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            /* Card touch targets */
-            .btn-icon {
-                padding: 0.7rem 0.5rem;
-                font-size: 0.9rem;
-                min-height: 44px;
-            }
-
-            /* Toast – full width at bottom */
-            .toast-container {
-                bottom: 1rem;
-                right: 0.8rem;
-                left: 0.8rem;
-            }
-            .toast {
-                padding: 0.8rem 1rem;
-                font-size: 0.9rem;
-            }
-
-            /* Landing sections */
-            .landing-section h2 {
-                font-size: 1.6rem;
-                margin-bottom: 1.5rem;
-            }
-            .features-grid,
-            .use-cases-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            .feature-card,
-            .use-case-card {
-                padding: 1.3rem;
-            }
-            .social-proof {
-                gap: 1.2rem;
-                padding: 1.5rem 1rem;
-            }
-            .stat {
+                padding: 0.85rem 1.2rem;
+                border-radius: 12px;
                 font-size: 0.95rem;
             }
-            .step {
-                padding: 1rem;
-                gap: 1rem;
-            }
-            .footer-cta h2 {
-                font-size: 1.6rem;
-            }
+            .btn-extract:hover { transform: none !important; }
+            .btn-extract:disabled { transform: none !important; }
+
+            /* Results header */
+            .results-header { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+            .results-info { flex-wrap: wrap; gap: 0.5rem; width: 100%; }
+            .channel-badge { font-size: 0.82rem; padding: 0.3rem 0.75rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+
+            /* Action buttons */
+            .actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+            .btn-action { justify-content: center; padding: 0.65rem 0.4rem; font-size: 0.8rem; border-radius: 10px; touch-action: manipulation; }
+
+            /* Video grid */
+            .video-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+            .video-card { border-radius: 12px; }
+            .video-info { padding: 0.9rem; gap: 0.6rem; }
+            .video-title { font-size: 0.95rem; }
+            .btn-icon { padding: 0.65rem 0.4rem; font-size: 0.85rem; min-height: 44px; touch-action: manipulation; }
+
+            /* Toast */
+            .toast-container { bottom: 0.8rem; right: 0.6rem; left: 0.6rem; }
+            .toast { padding: 0.75rem 0.9rem; font-size: 0.85rem; }
+
+            /* Landing content */
+            .landing-content { gap: 2rem; margin-top: 1rem; }
+            .landing-section { padding: 1rem 1rem; }
+            .landing-section h2 { font-size: 1.5rem; margin-bottom: 1.2rem; }
+            .features-grid, .use-cases-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+            .feature-card, .use-case-card { padding: 1.1rem; border-radius: 12px; }
+            .feature-card i { font-size: 1.8rem; margin-bottom: 0.8rem; }
+            .feature-card h3, .use-case-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+
+            /* Social proof */
+            .social-proof { gap: 1rem; padding: 1.2rem 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+            .stat { font-size: 0.9rem; }
+
+            /* Steps */
+            .steps { gap: 0.8rem; }
+            .step { padding: 0.9rem; gap: 0.8rem; border-radius: 10px; }
+            .step-number { width: 34px; height: 34px; font-size: 1rem; }
+            .step-content h3 { font-size: 1rem; }
+            .step-content p { font-size: 0.9rem; }
+
+            /* FAQ */
+            .faq-grid { gap: 0.7rem; }
+            .faq-item { padding: 1rem; border-radius: 10px; }
+            .faq-item h3 { font-size: 1rem; }
+            .faq-item p { font-size: 0.88rem; }
+
+            /* Footer CTA */
+            .footer-cta { padding: 2.5rem 1rem; margin-top: 1.5rem; }
+            .footer-cta h2 { font-size: 1.4rem; margin-bottom: 1.2rem; }
+            .footer-cta .btn-extract { position: static !important; transform: none !important; padding: 0.85rem 2rem; font-size: 1rem; }
         }
 
-        /* Extra small screens (< 400px) */
+        /* Extra small (< 400px) */
         @media (max-width: 400px) {
-            h1 { font-size: 1.1rem; }
-            .actions {
-                grid-template-columns: 1fr 1fr;
-            }
-            .btn-action:last-child {
-                grid-column: 1 / -1;
-            }
+            h1 { font-size: 1rem; }
+            .actions { grid-template-columns: 1fr 1fr; }
+            .btn-action:last-child { grid-column: 1 / -1; }
+            .landing-section h2 { font-size: 1.3rem; }
         }
+
         /* Landing Page Styles */
         .landing-content {
             width: 100%;
