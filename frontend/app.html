@@ -963,16 +963,12 @@
                 }
             }
 
-            // Restore results if page was accidentally refreshed mid-session
+            // Restore the channel name if the user accidentally refreshes the page
             restoreCachedResults() {
                 try {
-                    const cached = sessionStorage.getItem('ytExtractorLastResult');
-                    if (cached) {
-                        const data = JSON.parse(cached);
-                        this.currentData = data;
-                        this.renderResults(data);
-                        this.searchContainer.classList.add('active');
-                        this.showToast(`Restored ${data.videos.length} videos from last session.`, 'info');
+                    const cachedName = sessionStorage.getItem('ytExtractorLastChannel');
+                    if (cachedName) {
+                        this.input.value = cachedName;
                     }
                 } catch (_) {}
             }
@@ -1072,8 +1068,8 @@
 
                     this.currentData = data;
                     this.renderResults(data);
-                    // Cache results in sessionStorage so a page refresh doesn't lose everything
-                    try { sessionStorage.setItem('ytExtractorLastResult', JSON.stringify(data)); } catch (_) {}
+                    // Cache just the channel name so a page refresh doesn't lose their input
+                    try { sessionStorage.setItem('ytExtractorLastChannel', query); } catch (_) {}
                     this.showToast(`Successfully extracted ${data.videos.length} videos!`, 'success');
                     
                     // Layout change
