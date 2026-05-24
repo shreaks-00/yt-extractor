@@ -1,4 +1,5 @@
 {
+  "name": "yt-links-app",
   "rewrites": [
     {
       "source": "/extract",
