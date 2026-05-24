@@ -840,6 +840,12 @@
 
     <script>
         const API_URL = '/extract';
+        const HEALTH_URL = 'https://yt-extractor-backend.onrender.com/health';
+
+        // Wake up the Render backend immediately on page load (free tier goes to sleep)
+        (function pingBackend() {
+            fetch(HEALTH_URL, { method: 'GET', mode: 'cors' }).catch(() => {});
+        })();
 
         class ExtractorApp {
             constructor() {
@@ -862,8 +868,19 @@
                 this.saveJsonBtn = document.getElementById('saveJsonBtn');
 
                 this.currentData = null;
+                this.serverReady = false;
 
                 this.bindEvents();
+                this.checkServerReady();
+            }
+
+            async checkServerReady() {
+                try {
+                    const res = await fetch(HEALTH_URL, { method: 'GET', mode: 'cors' });
+                    if (res.ok) this.serverReady = true;
+                } catch (_) {
+                    this.serverReady = false;
+                }
             }
 
             bindEvents() {
@@ -934,12 +951,24 @@
                 this.setLoading(true);
                 this.resultsContainer.style.display = 'none';
 
+                // Show a warming-up notice if backend might be cold
+                const warmupToast = setTimeout(() => {
+                    this.showToast('⏳ Server is waking up, please wait a moment...', 'info');
+                }, 8000);
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 150000); // 150s timeout
+
                 try {
                     const response = await fetch(API_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ channel: query })
+                        body: JSON.stringify({ channel: query }),
+                        signal: controller.signal
                     });
+
+                    clearTimeout(warmupToast);
+                    clearTimeout(timeoutId);
 
                     const data = await response.json();
 
@@ -955,7 +984,13 @@
                     this.searchContainer.classList.add('active');
 
                 } catch (error) {
-                    this.showToast(error.message, 'error');
+                    clearTimeout(warmupToast);
+                    clearTimeout(timeoutId);
+                    if (error.name === 'AbortError') {
+                        this.showToast('Request timed out. The server may be busy — please try again.', 'error');
+                    } else {
+                        this.showToast(error.message, 'error');
+                    }
                 } finally {
                     this.setLoading(false);
                 }
