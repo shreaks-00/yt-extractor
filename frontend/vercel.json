@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/extract",
+      "destination": "https://yt-extractor-backend.onrender.com/extract"
+    }
+  ]
+}
