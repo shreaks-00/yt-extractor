@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Channel Video Extractor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --surface-color: rgba(20, 20, 25, 0.7);
+            --surface-hover: rgba(30, 30, 38, 0.9);
+            --primary: #9d4edd;
+            --primary-glow: rgba(157, 78, 221, 0.5);
+            --secondary: #e0aaff;
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --danger: #ff4d4d;
+            --success: #00e676;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(12px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        .bg-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 80vw;
+            height: 80vh;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 60%);
+            opacity: 0.15;
+            z-index: -1;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.3;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Layout */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            filter: drop-shadow(0 0 10px var(--primary-glow));
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, #fff, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Input Section */
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 2vh;
+            transition: margin 0.5s ease;
+        }
+
+        .search-container.active {
+            margin-top: 0;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 1.2rem 1.5rem 1.2rem 4rem;
+            font-size: 1.1rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--surface-color);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: var(--glass-blur);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow), inset 0 0 10px rgba(157, 78, 221, 0.1);
+            background: var(--surface-hover);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn-extract {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--primary), #7b2cbf);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-extract:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .btn-extract:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: translateY(-50%);
+            box-shadow: none;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Results Area */
+        .results-container {
+            display: none;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .results-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .channel-badge {
+            background: rgba(157, 78, 221, 0.15);
+            border: 1px solid var(--primary-glow);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: var(--surface-color);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .btn-action:hover {
+            background: var(--surface-hover);
+            border-color: var(--text-muted);
+            transform: translateY(-2px);
+        }
+
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .video-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(157, 78, 221, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(157, 78, 221, 0.2);
+        }
+
+        .thumbnail-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .video-card:hover .thumbnail {
+            transform: scale(1.05);
+        }
+
+        .video-info {
+            padding: 1.2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .video-title {
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--text-main);
+        }
+
+        .card-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .btn-icon.copy:hover {
+            color: var(--success);
+            background: rgba(0, 230, 118, 0.1);
+        }
+
+        .btn-icon.open:hover {
+            color: var(--primary);
+            background: rgba(157, 78, 221, 0.1);
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: var(--surface-color);
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: var(--glass-blur);
+            animation: slideIn 0.3s ease forwards;
+            font-weight: 500;
+        }
+
+        .toast.success { border-color: var(--success); }
+        .toast.error { border-color: var(--danger); }
+        
+        .toast i { font-size: 1.2rem; }
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+        .toast.info i { color: var(--primary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .btn-extract {
+                position: static;
+                transform: none;
+                width: 100%;
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            input {
+                padding-right: 1.5rem;
+            }
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .toast-container {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+            }
+        }
+        /* Landing Page Styles */
+        .landing-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+            margin-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .landing-section {
+            padding: 2rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .landing-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(to right, #fff, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .social-proof {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 2rem 1.5rem;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin-top: 3rem;
+            flex-wrap: wrap;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .stat i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .features-grid, .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card, .use-case-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: 16px;
+            backdrop-filter: var(--glass-blur);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover, .use-case-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3, .use-case-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .feature-card p, .use-case-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            background: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .step-number {
+            background: rgba(157, 78, 221, 0.2);
+            color: var(--secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            border: 1px solid var(--primary-glow);
+        }
+
+        .step-content h3 { 
+            margin-bottom: 0.5rem; 
+            font-size: 1.2rem;
+        }
+        
+        .step-content p { 
+            color: var(--text-muted); 
+            line-height: 1.5;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--surface-color);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .faq-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .faq-item p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .footer-cta {
+            text-align: center;
+            padding: 5rem 1.5rem;
+            background: radial-gradient(circle at bottom, rgba(157, 78, 221, 0.15) 0%, transparent 70%);
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
+
+        .footer-cta h2 { 
+            margin-bottom: 2rem; 
+            font-size: 2.5rem; 
+        }
+
+        .footer-cta .btn-extract {
+            position: static;
+            transform: none;
+            display: inline-flex;
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="grid-bg"></div>
+
+    <header>
+        <div class="header-content">
+            <i class="ph-fill ph-youtube-logo logo-icon"></i>
+            <h1>Extractor Pro</h1>
+        </div>
+    </header>
+
+    <main style="align-items: center; justify-content: center; text-align: center; padding-top: 8vh; padding-bottom: 0;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h2 style="font-size: 3.5rem; line-height: 1.2; margin-bottom: 1.5rem;">Extract Every YouTube Video Instantly. Zero Limits.</h2>
+            <p style="color: var(--text-muted); font-size: 1.2rem; line-height: 1.6; margin-bottom: 2.5rem;">The ultimate scraping tool to pull all video links and metadata from any YouTube channel in seconds. Free forever, with no signup required.</p>
+            <a href="app.html" class="btn-extract" style="position: static; transform: none; display: inline-flex; padding: 1.2rem 3rem; font-size: 1.2rem; text-decoration: none;">
+                <span>Start Extracting Now</span>
+                <i class="ph-bold ph-arrow-right"></i>
+            </a>
+        </div>
+    </main>
+
+    <div class="landing-content" style="margin-top: 0;">
+
+        <section class="social-proof">
+            <div class="stat"><i class="ph-fill ph-lightning"></i> Instant Extraction</div>
+            <div class="stat"><i class="ph-fill ph-user-minus"></i> No Account Needed</div>
+            <div class="stat"><i class="ph-fill ph-infinity"></i> 100% Free Forever</div>
+        </section>
+
+        <section class="landing-section">
+            <h2>Powerful Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="ph ph-rocket-launch"></i>
+                    <h3>Lightning Fast</h3>
+                    <p>Powered by yt-dlp to bypass limits and fetch complete channel playlists in mere seconds.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ph ph-database"></i>
+                    <h3>Rich Metadata</h3>
+                    <p>Get accurate titles, high-res thumbnails, video durations, and exact URLs for every single upload.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ph ph-code"></i>
+                    <h3>Export to JSON</h3>
+                    <p>Perfect for developers needing clean, structured data for integrations and custom applications.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ph ph-file-text"></i>
+                    <h3>Export to TXT</h3>
+                    <p>Download a simple text file containing all video links for easy archiving and bulk processing.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ph ph-copy"></i>
+                    <h3>Clipboard Ready</h3>
+                    <p>Copy hundreds of video links straight to your clipboard with a single click.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ph ph-shield-check"></i>
+                    <h3>Privacy First</h3>
+                    <p>We don't track your extractions or require any personal information whatsoever.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Paste the URL</h3>
+                        <p>Enter any public YouTube channel handle (like @channel) or full URL into the search bar.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Click Extract</h3>
+                        <p>Our secure backend executes real-time fetches against the channel's entire video library.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Export Data</h3>
+                        <p>Copy the generated links or download the complete metadata in your preferred format instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section">
+            <h2>Built For Everyone</h2>
+            <div class="use-cases-grid">
+                <div class="use-case-card">
+                    <h3>Content Creators</h3>
+                    <p>Analyze competitor upload histories, study title structures, and archive your own channel's metadata offline.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>Developers</h3>
+                    <p>Quickly generate structured JSON datasets for YouTube-related projects without managing the YouTube API.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>Researchers</h3>
+                    <p>Scrape comprehensive channel data for academic or market research without writing a single line of Python.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>Marketers</h3>
+                    <p>Pull extensive lists of specific video URLs for bulk outreach, targeted ad placements, or content auditing.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3><i class="ph-fill ph-question"></i> Is it really 100% free?</h3>
+                    <p>Yes, the tool is completely free to use with no hidden paywalls, subscriptions, or premium tiers.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i class="ph-fill ph-question"></i> Do I need to create an account?</h3>
+                    <p>No, you can extract as many channels as you want without ever signing up or logging in.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i class="ph-fill ph-question"></i> Is there a limit on extractions?</h3>
+                    <p>There are no hard limits. However, to prevent automated abuse, we employ a generous 15-minute rate limit per IP.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i class="ph-fill ph-question"></i> What formats can I export?</h3>
+                    <p>You can instantly copy everything to your clipboard, or download it locally as a formatted .TXT or .JSON file.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i class="ph-fill ph-question"></i> Is it legal to use this tool?</h3>
+                    <p>Yes. We only extract publicly available metadata that anyone can see directly on YouTube's public pages.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i class="ph-fill ph-question"></i> How does it work under the hood?</h3>
+                    <p>The backend runs on an optimized Node.js server that securely executes yt-dlp commands to fetch data directly.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="footer-cta">
+            <h2>Stop manually copying links. Get your data instantly.</h2>
+            <a href="app.html" class="btn-extract" style="text-decoration:none;">
+                <span>Start Extracting Now</span>
+                <i class="ph-bold ph-arrow-right"></i>
+            </a>
+        </section>
+    </div>
+</body>
+</html>
+</body>
+</html>
