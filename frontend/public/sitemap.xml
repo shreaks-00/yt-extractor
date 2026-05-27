@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://yt-links-app.vercel.app/</loc>
+        <loc>https://yt-extractor-3.vercel.app/</loc>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://yt-links-app.vercel.app/app.html</loc>
+        <loc>https://yt-extractor-3.vercel.app/app.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://yt-links-app.vercel.app/playlist-extractor.html</loc>
+        <loc>https://yt-extractor-3.vercel.app/playlist-extractor.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://yt-links-app.vercel.app/shorts-extractor.html</loc>
+        <loc>https://yt-extractor-3.vercel.app/shorts-extractor.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://yt-links-app.vercel.app/deleted-video-tracker.html</loc>
+        <loc>https://yt-extractor-3.vercel.app/deleted-video-tracker.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://yt-links-app.vercel.app/thumbnail.html</loc>
+        <loc>https://yt-extractor-3.vercel.app/thumbnail.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://yt-links-app.vercel.app/thumbnail-zip.html</loc>
+        <loc>https://yt-extractor-3.vercel.app/thumbnail-zip.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://yt-links-app.vercel.app/description-exporter.html</loc>
+        <loc>https://yt-extractor-3.vercel.app/description-exporter.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://yt-links-app.vercel.app/tags-exporter.html</loc>
+        <loc>https://yt-extractor-3.vercel.app/tags-exporter.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://yt-links-app.vercel.app/comments-exporter.html</loc>
+        <loc>https://yt-extractor-3.vercel.app/comments-exporter.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>

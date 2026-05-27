@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yt-links-app.vercel.app/sitemap.xml
+Sitemap: https://yt-extractor-3.vercel.app/sitemap.xml
