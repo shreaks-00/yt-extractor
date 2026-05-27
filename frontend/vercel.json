@@ -1,9 +1,18 @@
 {
   "name": "yt-links-app",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "rewrites": [
-    {
-      "source": "/extract",
-      "destination": "https://yt-extractor-backend.onrender.com/extract"
-    }
+    { "source": "/api/:path*", "destination": "https://yt-extractor-backend.onrender.com/api/:path*" },
+    { "source": "/health", "destination": "https://yt-extractor-backend.onrender.com/health" },
+    { "source": "/channel-extractor", "destination": "/app.html" },
+    { "source": "/playlist-extractor", "destination": "/playlist-extractor.html" },
+    { "source": "/shorts-extractor", "destination": "/shorts-extractor.html" },
+    { "source": "/deleted-video-tracker", "destination": "/deleted-video-tracker.html" },
+    { "source": "/thumbnail-downloader", "destination": "/thumbnail.html" },
+    { "source": "/thumbnail-zip", "destination": "/thumbnail-zip.html" },
+    { "source": "/description-exporter", "destination": "/description-exporter.html" },
+    { "source": "/tags-exporter", "destination": "/tags-exporter.html" },
+    { "source": "/comments-exporter", "destination": "/comments-exporter.html" }
   ]
 }
