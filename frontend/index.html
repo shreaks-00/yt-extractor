@@ -93,15 +93,22 @@
             border-bottom: 1px solid var(--border);
             padding: 1.5rem 2rem;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .header-content {
+        .logo {
             display: flex;
             align-items: center;
             gap: 1rem;
+            text-decoration: none;
         }
+
+        nav { display: flex; gap: 1.5rem; }
+        nav a { color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        nav a:hover { color: var(--primary); }
+
+
 
         .logo-icon {
             font-size: 2rem;
@@ -684,6 +691,21 @@
         @media (max-width: 400px) {
             main h2 { font-size: 1.8rem !important; }
         }
+    
+        /* Nav Dropdown */
+        .dropdown { position: relative; display: inline-block; padding-bottom: 1.5rem; margin-bottom: -1.5rem; }
+        .dropbtn { background: none; border: none; color: var(--text-muted); font-size: 1rem; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 0.3rem; transition: color 0.3s; padding: 0; }
+        .dropbtn:hover, .dropdown:hover .dropbtn { color: var(--primary); }
+        .dropdown-content { display: none; position: absolute; right: 0; background: rgba(15, 15, 20, 0.98); min-width: 480px; box-shadow: 0px 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(16px); border: 1px solid rgba(157, 78, 221, 0.3); border-radius: 12px; padding: 1.5rem; z-index: 1000; grid-template-columns: 1fr 1fr; gap: 1.5rem; top: 100%; margin-top: 0; }
+        .dropdown:hover .dropdown-content { display: grid; animation: fadeInNav 0.2s ease forwards; }
+        .dropdown-col strong { display: block; color: var(--text-main); margin-bottom: 0.8rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+        .dropdown-col a { color: var(--text-muted); padding: 0.4rem 0; text-decoration: none; display: block; font-size: 0.95rem; transition: all 0.2s; }
+        .dropdown-col a:hover { color: var(--secondary); padding-left: 5px; }
+        @keyframes fadeInNav { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) {
+            .dropdown-content { position: fixed; top: 70px; left: 1rem; right: 1rem; min-width: auto; grid-template-columns: 1fr; max-height: 80vh; overflow-y: auto; }
+        }
+
     </style>
 </head>
 <body>
@@ -691,17 +713,41 @@
     <div class="grid-bg"></div>
 
     <header>
-        <div class="header-content">
+        <a href="/" class="logo">
             <i class="ph-fill ph-youtube-logo logo-icon"></i>
             <h1>Extractor Pro</h1>
-        </div>
+        </a>
+        <nav>
+            <a href="/index.html">Home</a>
+            <div class="dropdown">
+                <button class="dropbtn">All Tools <i class="ph-bold ph-caret-down"></i></button>
+                <div class="dropdown-content">
+                    <div class="dropdown-col">
+                        <strong>Core Extractors</strong>
+                        <a href="/app.html">Channel Extractor</a>
+                        <a href="/playlist-extractor.html">Playlist Extractor</a>
+                        <a href="/shorts-extractor.html">Shorts Extractor</a>
+                        <a href="/deleted-video-tracker.html">Deleted Video Tracker</a>
+                    </div>
+                    <div class="dropdown-col">
+                        <strong>Export & Data</strong>
+                        <a href="/thumbnail.html">Thumbnail Downloader</a>
+                        <a href="/thumbnail-zip.html">Thumbnail ZIP Downloader</a>
+                        <a href="/description-exporter.html">Description Exporter</a>
+                        <a href="/tags-exporter.html">Video Tags Exporter</a>
+                        <a href="/comments-exporter.html">Comments Exporter</a>
+                    </div>
+                </div>
+            </div>
+        <a href="https://www.youtube.com" target="_blank" style="color: #ff4d4d; display: flex; align-items: center; gap: 0.4rem; font-weight: 600;"><i class="ph-fill ph-youtube-logo" style="font-size: 1.2rem;"></i> YouTube</a>
+        </nav>
     </header>
 
     <main style="align-items: center; justify-content: center; text-align: center; padding-top: 8vh; padding-bottom: 0;">
         <div style="max-width: 800px; margin: 0 auto;">
             <h2 style="font-size: 3.5rem; line-height: 1.2; margin-bottom: 1.5rem;">Extract Every YouTube Video Instantly. Zero Limits.</h2>
             <p style="color: var(--text-muted); font-size: 1.2rem; line-height: 1.6; margin-bottom: 2.5rem;">The ultimate scraping tool to pull all video links and metadata from any YouTube channel in seconds. Free forever, with no signup required.</p>
-            <a href="app.html" class="btn-extract" style="position: static; transform: none; display: inline-flex; padding: 1.2rem 3rem; font-size: 1.2rem; text-decoration: none;">
+            <a href="/app.html" class="btn-extract" style="position: static; transform: none; display: inline-flex; padding: 1.2rem 3rem; font-size: 1.2rem; text-decoration: none;">
                 <span>Start Extracting Now</span>
                 <i class="ph-bold ph-arrow-right"></i>
             </a>
@@ -801,6 +847,64 @@
             </div>
         </section>
 
+        <section class="landing-section" id="tools-directory">
+            <h2>Complete Tools Directory</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-top: -2rem; margin-bottom: 3rem;">All 20+ specialized extraction tools to supercharge your YouTube research.</p>
+            
+            <h3 style="margin-bottom: 1.5rem; color: var(--primary); font-family: 'Outfit', sans-serif;">Core Extraction Tools</h3>
+            <div class="features-grid" style="margin-bottom: 4rem;">
+                <a href="/channel-extractor" class="feature-card" style="text-decoration: none;">
+                    <i class="ph ph-youtube-logo"></i>
+                    <h3>Channel Extractor</h3>
+                    <p>Extract all public video links from any channel.</p>
+                </a>
+                <a href="/playlist-extractor" class="feature-card" style="text-decoration: none;">
+                    <i class="ph ph-list-dashes"></i>
+                    <h3>Playlist Extractor</h3>
+                    <p>Pull all playlist videos and metadata instantly.</p>
+                </a>
+                <a href="/shorts-extractor" class="feature-card" style="text-decoration: none;">
+                    <i class="ph ph-device-mobile"></i>
+                    <h3>Shorts Extractor</h3>
+                    <p>Extract only Shorts from channels.</p>
+                </a>
+                <a href="/deleted-video-tracker" class="feature-card" style="text-decoration: none;">
+                    <i class="ph ph-eye-slash"></i>
+                    <h3>Deleted Video Tracker</h3>
+                    <p>Track removed/private videos from historical data.</p>
+                </a>
+            </div>
+
+            <h3 style="margin-bottom: 1.5rem; color: var(--secondary); font-family: 'Outfit', sans-serif;">Export & Dataset Tools</h3>
+            <div class="features-grid">
+                <a href="/thumbnail-downloader" class="feature-card" style="text-decoration: none;">
+                    <i class="ph ph-image"></i>
+                    <h3>Thumbnail Downloader</h3>
+                    <p>Download max-res thumbnails for any video.</p>
+                </a>
+                <a href="/thumbnail-zip" class="feature-card" style="text-decoration: none;">
+                    <i class="ph ph-file-archive"></i>
+                    <h3>Thumbnail ZIP Downloader</h3>
+                    <p>Download multiple thumbnails as a ZIP archive.</p>
+                </a>
+                <a href="/description-exporter" class="feature-card" style="text-decoration: none;">
+                    <i class="ph ph-text-align-left"></i>
+                    <h3>Description Exporter</h3>
+                    <p>Extract descriptions from multiple videos.</p>
+                </a>
+                <a href="/tags-exporter" class="feature-card" style="text-decoration: none;">
+                    <i class="ph ph-tag"></i>
+                    <h3>Video Tags Exporter</h3>
+                    <p>Extract SEO tags from any video.</p>
+                </a>
+                <a href="/comments-exporter" class="feature-card" style="text-decoration: none;">
+                    <i class="ph ph-chats-circle"></i>
+                    <h3>Comments Exporter</h3>
+                    <p>Extract comments and replies from videos.</p>
+                </a>
+            </div>
+        </section>
+
         <section class="landing-section">
             <h2>Frequently Asked Questions</h2>
             <div class="faq-grid">
@@ -833,7 +937,7 @@
 
         <section class="footer-cta">
             <h2>Stop manually copying links. Get your data instantly.</h2>
-            <a href="app.html" class="btn-extract" style="text-decoration:none;">
+            <a href="/channel-extractor" class="btn-extract" style="text-decoration:none;">
                 <span>Start Extracting Now</span>
                 <i class="ph-bold ph-arrow-right"></i>
             </a>

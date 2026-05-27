@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free YouTube Channel Extractor Tool</title>
-    <meta name="description" content="Extract all public YouTube channel videos, metadata, and URLs instantly from any channel. Export results as TXT or JSON." />
-    <meta name="keywords" content="extract youtube channel videos,youtube channel scraper,export youtube channel videos,youtube channel url extractor" />
-    <link rel="canonical" href="/channel-extractor" />
+    <title>Free YouTube Deleted Video Tracker</title>
+    <meta name="description" content="Track deleted or private YouTube videos by comparing a saved export against a fresh channel scan. Find missing videos fast." />
+    <meta name="keywords" content="youtube deleted video tracker,track deleted youtube videos,private video checker,youtube missing videos" />
+    <link rel="canonical" href="/deleted-video-tracker" />
     <meta name="google-site-verification" content="3_CeHzeBYpq9Q8B7JQko2BYovDz8vvmIU0aniYkECk0" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -14,7 +14,7 @@
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "YouTube Channel Extractor",
+        "name": "YouTube Deleted Video Tracker",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Web",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
@@ -27,26 +27,18 @@
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "How do I extract all videos from a YouTube channel?",
+            "name": "How do I find deleted YouTube videos from a channel?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Paste a YouTube channel URL or handle (like @MrBeast) and click Extract. The tool lists all public uploads and lets you export URLs and metadata."
+              "text": "First save a channel export as JSON. Later, run a fresh channel scan and compare the two lists. Missing video IDs indicate deleted or private videos."
             }
           },
           {
             "@type": "Question",
-            "name": "Can I export YouTube channel videos as a file?",
+            "name": "Does this work for private videos?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Export to TXT for a simple URL list or to JSON for structured metadata."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Does this work without the YouTube API?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. It extracts publicly available data and does not require you to configure a YouTube Data API key."
+              "text": "It can highlight missing videos, which may be deleted, private, or region-restricted. The tracker flags what changed; the exact reason can vary."
             }
           }
         ]
@@ -813,15 +805,15 @@
                         <strong>Core Extractors</strong>
                         <a href="/channel-extractor">Channel Extractor</a>
                         <a href="/playlist-extractor">Playlist Extractor</a>
-                        <a href="/shorts-extractor">Shorts Extractor</a>
-                        <a href="/deleted-video-tracker">Deleted Video Tracker</a>
+                        <a href="shorts-extractor.html">Shorts Extractor</a>
+                        <a href="deleted-video-tracker.html">Deleted Video Tracker</a>
                     </div>
                     <div class="dropdown-col">
                         <strong>Export & Data</strong>
                         <a href="/thumbnail-downloader">Thumbnail Downloader</a>
-                        <a href="/thumbnail-zip">Thumbnail ZIP Downloader</a>
-                        <a href="/description-exporter">Description Exporter</a>
-                        <a href="/tags-exporter">Video Tags Exporter</a>
+                        <a href="thumbnail-zip.html">Thumbnail ZIP Downloader</a>
+                        <a href="description-exporter.html">Description Exporter</a>
+                        <a href="tags-exporter.html">Video Tags Exporter</a>
                         <a href="/comments-exporter">Comments Exporter</a>
                     </div>
                 </div>
@@ -831,18 +823,44 @@
     </header>
 
     <main>
+        <section style="max-width: 980px; margin: 0 auto; text-align: center; padding-bottom: 0.5rem;">
+            <h1 style="font-size: 2.6rem; line-height: 1.2; margin-bottom: 0.8rem;">YouTube Deleted Video Tracker</h1>
+            <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin: 0 auto 1.6rem auto; max-width: 920px;">
+                Track deleted or private YouTube videos by comparing a saved snapshot with a fresh channel scan. This is the fastest way to identify missing uploads for audits, archives, and competitor monitoring.
+            </p>
+            <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; margin-bottom: 1rem;">
+                <a href="/channel-extractor" class="btn-action" style="text-decoration:none;">
+                    <i class="ph ph-youtube-logo"></i> Channel Extractor
+                </a>
+                <a href="/playlist-extractor" class="btn-action" style="text-decoration:none;">
+                    <i class="ph ph-list-dashes"></i> Playlist Extractor
+                </a>
+            </div>
+        </section>
         <div class="search-container" id="searchContainer">
+            <div style="text-align:center; margin-bottom: 0.5rem;">
+                <h2 style="font-size:1.8rem; font-family:'Outfit',sans-serif; background:linear-gradient(to right,#fff,var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Track Deleted YouTube Videos</h2>
+                <p style="color:var(--text-muted); font-size:0.95rem; margin-top:0.5rem;">Paste a channel URL — we do the rest. Your snapshot is saved automatically.</p>
+            </div>
+
+            <!-- Snapshot status banner -->
+            <div id="snapshotBanner" style="display:none; background:rgba(157,78,221,0.1); border:1px solid var(--primary-glow); border-radius:12px; padding:1rem 1.5rem; max-width:700px; width:100%; text-align:center;">
+                <i class="ph-fill ph-database" style="color:var(--secondary);"></i>
+                <span id="snapshotBannerText" style="color:var(--secondary); font-size:0.9rem; margin-left:0.5rem;"></span>
+                <button onclick="app.clearSnapshot()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem; margin-left:1rem; opacity:0.7;">✕ Clear</button>
+            </div>
+
             <div class="input-wrapper">
                 <i class="ph ph-magnifying-glass input-icon"></i>
-                <input type="text" id="channelInput" placeholder="Enter YouTube channel URL or handle to extract all public videos (e.g. https://www.youtube.com/@MrBeast)" autocomplete="off" spellcheck="false">
+                <input type="text" id="channelInput" placeholder="Enter YouTube channel URL or handle (e.g. https://www.youtube.com/@MrBeast)" autocomplete="off" spellcheck="false">
                 <button class="btn-extract" id="extractBtn">
-                    <span>Extract</span>
-                    <i class="ph-bold ph-arrow-right"></i>
+                    <span>Scan Channel</span>
+                    <i class="ph-bold ph-eye-slash"></i>
                     <div class="spinner" id="btnSpinner"></div>
                 </button>
             </div>
-            <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center;">
-                Instantly extract all public video links from any YouTube channel.
+            <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center;">
+                <i class="ph-fill ph-info"></i> First scan saves a snapshot. Second scan detects deleted videos.
             </p>
         </div>
 
@@ -854,10 +872,13 @@
                         <span id="channelNameDisplay">@channel</span>
                     </div>
                     <span style="color: var(--text-muted); font-size: 0.95rem;">
-                        <span id="videoCountDisplay">0</span> videos found
+                        <span id="videoCountDisplay">0</span>
                     </span>
                 </div>
                 <div class="actions">
+                    <button class="btn-action" id="updateSnapshotBtn" style="display:none;">
+                        <i class="ph ph-arrows-clockwise"></i> Update Snapshot
+                    </button>
                     <button class="btn-action" id="copyAllBtn">
                         <i class="ph ph-copy"></i> Copy All
                     </button>
@@ -878,25 +899,9 @@
 
     <div class="landing-content">
         <!-- Hero text injected in the header context -->
-        <div style="text-align: center; max-width: 900px; margin: 0 auto -2rem auto; padding: 0 1.5rem;">
-            <h1 style="font-size: 3rem; line-height: 1.15; margin-bottom: 1rem;">YouTube Channel Extractor</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.2rem;">
-                Extract YouTube channel videos in seconds. Paste a channel handle like <strong>@MrBeast</strong> or a channel URL to export every public upload with titles, thumbnails, and video URLs.
-            </p>
-            <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
-                This YouTube channel scraper is built for speed and export: copy links, download TXT, or export JSON for analysis, research, and content audits.
-            </p>
-            <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap;">
-                <a href="/playlist-extractor" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-list-dashes"></i> Playlist Extractor
-                </a>
-                <a href="/thumbnail-downloader" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-image"></i> Thumbnail Downloader
-                </a>
-                <a href="/comments-exporter" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-chats-circle"></i> Comments Exporter
-                </a>
-            </div>
+        <div style="text-align: center; max-width: 800px; margin: 0 auto -2rem auto; padding: 0 1.5rem;">
+            <h2 style="font-size: 3rem; line-height: 1.2; margin-bottom: 1rem;">Extract Every YouTube Video Instantly. Zero Limits.</h2>
+            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem;">The ultimate scraping tool to pull all video links and metadata from any YouTube channel in seconds. Free forever, with no signup required.</p>
         </div>
 
         <section class="social-proof">
@@ -1033,91 +1038,117 @@
 
     <script>
         const API_URL = '/api/channel';
-        const HEALTH_URL = '/health';
-
-        // Wake up the Render backend immediately on page load (free tier goes to sleep)
-        (function pingBackend() {
-            fetch(HEALTH_URL, { method: 'GET', mode: 'cors' }).catch(() => {});
-        })();
+        const STORAGE_KEY = 'yt-tracker-snapshots';
 
         class ExtractorApp {
             constructor() {
                 this.input = document.getElementById('channelInput');
                 this.extractBtn = document.getElementById('extractBtn');
                 this.btnText = this.extractBtn.querySelector('span');
-                this.btnIcon = this.extractBtn.querySelector('.ph-arrow-right');
+                this.btnIcon = this.extractBtn.querySelector('.ph-eye-slash');
                 this.spinner = document.getElementById('btnSpinner');
-                
                 this.searchContainer = document.getElementById('searchContainer');
                 this.resultsContainer = document.getElementById('resultsContainer');
                 this.videoGrid = document.getElementById('videoGrid');
-                
-                this.channelDisplay = document.getElementById('channelNameDisplay');
-                this.countDisplay = document.getElementById('videoCountDisplay');
                 this.toastContainer = document.getElementById('toastContainer');
-
-                this.copyAllBtn = document.getElementById('copyAllBtn');
-                this.saveTxtBtn = document.getElementById('saveTxtBtn');
-                this.saveJsonBtn = document.getElementById('saveJsonBtn');
+                this.snapshotBanner = document.getElementById('snapshotBanner');
+                this.snapshotBannerText = document.getElementById('snapshotBannerText');
 
                 this.currentData = null;
-                this.serverReady = false;
-
                 this.bindEvents();
-                this.checkServerReady();
-                this.restoreCachedResults();
-            }
-
-            async checkServerReady() {
-                try {
-                    const res = await fetch(HEALTH_URL, { method: 'GET', mode: 'cors' });
-                    if (res.ok) this.serverReady = true;
-                } catch (_) {
-                    this.serverReady = false;
-                }
-            }
-
-            // Restore the channel name if the user accidentally refreshes the page
-            restoreCachedResults() {
-                try {
-                    const cachedName = sessionStorage.getItem('ytExtractorLastChannel');
-                    if (cachedName) {
-                        this.input.value = cachedName;
-                    }
-                } catch (_) {}
+                // Restore last channel URL if any
+                const last = localStorage.getItem('yt-tracker-last-channel');
+                if (last) this.input.value = last;
             }
 
             bindEvents() {
-                this.extractBtn.addEventListener('click', () => this.handleExtract());
-                this.input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.handleExtract();
-                });
+                this.extractBtn.addEventListener('click', () => this.handleScan());
+                this.input.addEventListener('keypress', e => { if (e.key === 'Enter') this.handleScan(); });
+                this.input.addEventListener('input', () => this.updateSnapshotBanner());
+                this.input.addEventListener('change', () => this.updateSnapshotBanner());
 
-                // Header actions
-                this.copyAllBtn.addEventListener('click', () => this.copyAllLinks());
-                this.saveTxtBtn.addEventListener('click', () => this.downloadTxt());
-                this.saveJsonBtn.addEventListener('click', () => this.exportJson());
-
-                // Individual card actions (using event delegation)
-                this.videoGrid.addEventListener('click', (e) => {
-                    const copyBtn = e.target.closest('.copy');
-                    if (copyBtn) {
-                        const url = copyBtn.getAttribute('data-url');
-                        if (url) {
-                            this.copyToClipboard(url);
-                        }
-                    }
+                document.getElementById('copyAllBtn')?.addEventListener('click', () => {
+                    if (!this.currentData?.videos?.length) return;
+                    navigator.clipboard.writeText(this.currentData.videos.map(v => v.url).join('\n'));
+                    this.showToast('Copied deleted video links!', 'success');
                 });
+                document.getElementById('saveTxtBtn')?.addEventListener('click', () => {
+                    if (!this.currentData?.videos?.length) return;
+                    const content = this.currentData.videos.map(v => `${v.title}\n${v.url}`).join('\n\n');
+                    this.downloadFile(content, 'deleted-videos.txt', 'text/plain');
+                });
+                document.getElementById('saveJsonBtn')?.addEventListener('click', () => {
+                    if (!this.currentData?.videos?.length) return;
+                    this.downloadFile(JSON.stringify(this.currentData, null, 2), 'deleted-videos.json', 'application/json');
+                });
+                document.getElementById('updateSnapshotBtn')?.addEventListener('click', () => {
+                    this.clearSnapshot();
+                    this.handleScan();
+                });
+            }
+
+            normalizeUrl(url) {
+                return url.trim().toLowerCase().replace(/\/+$/, '');
+            }
+
+            getSnapshots() {
+                try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+            }
+
+            loadSnapshot(url) {
+                return this.getSnapshots()[this.normalizeUrl(url)] || null;
+            }
+
+            saveSnapshot(url, videos) {
+                const snapshots = this.getSnapshots();
+                snapshots[this.normalizeUrl(url)] = {
+                    savedAt: new Date().toISOString(),
+                    channel: url,
+                    videoIds: videos.map(v => ({ videoId: v.videoId, title: v.title, url: v.url }))
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshots));
+            }
+
+            clearSnapshot() {
+                const url = this.input.value.trim();
+                if (!url) return;
+                const snapshots = this.getSnapshots();
+                delete snapshots[this.normalizeUrl(url)];
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshots));
+                this.updateSnapshotBanner();
+                this.showToast('Snapshot cleared', 'info');
+            }
+
+            updateSnapshotBanner() {
+                const url = this.input.value.trim();
+                if (!url) { this.snapshotBanner.style.display = 'none'; return; }
+                const snap = this.loadSnapshot(url);
+                if (snap) {
+                    const date = new Date(snap.savedAt);
+                    const ago = this.timeAgo(date);
+                    this.snapshotBannerText.textContent = `Snapshot found: ${snap.videoIds.length} videos saved ${ago}. Click "Scan Channel" to detect deleted videos.`;
+                    this.snapshotBanner.style.display = 'block';
+                } else {
+                    this.snapshotBanner.style.display = 'none';
+                }
+            }
+
+            timeAgo(date) {
+                const secs = Math.floor((Date.now() - date) / 1000);
+                if (secs < 60) return 'just now';
+                if (secs < 3600) return `${Math.floor(secs/60)} min ago`;
+                if (secs < 86400) return `${Math.floor(secs/3600)} hr ago`;
+                return `${Math.floor(secs/86400)} days ago`;
             }
 
             setLoading(isLoading) {
                 this.extractBtn.disabled = isLoading;
                 if (isLoading) {
-                    this.btnText.textContent = 'Extracting...';
+                    this.btnText.textContent = 'Scanning...';
                     this.btnIcon.style.display = 'none';
                     this.spinner.style.display = 'block';
                 } else {
-                    this.btnText.textContent = 'Extract';
+                    this.btnText.textContent = 'Scan Channel';
                     this.btnIcon.style.display = 'block';
                     this.spinner.style.display = 'none';
                 }
@@ -1126,155 +1157,153 @@
             showToast(message, type = 'info') {
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
-                
-                let iconClass = 'ph-info';
-                if (type === 'success') iconClass = 'ph-check-circle';
-                if (type === 'error') iconClass = 'ph-warning-circle';
-
-                toast.innerHTML = `
-                    <i class="ph-fill ${iconClass}"></i>
-                    <span>${message}</span>
-                `;
-
+                toast.innerHTML = `<i class="ph-fill ${type === 'success' ? 'ph-check-circle' : type === 'error' ? 'ph-warning-circle' : 'ph-info'}"></i><span>${message}</span>`;
                 this.toastContainer.appendChild(toast);
-
                 setTimeout(() => {
                     toast.style.animation = 'slideOut 0.3s ease forwards';
                     setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            }
-
-            async handleExtract() {
-                const query = this.input.value.trim();
-                if (!query) {
-                    this.showToast('Please enter a channel name or URL', 'error');
-                    this.input.focus();
-                    return;
-                }
-
-                this.setLoading(true);
-                this.resultsContainer.style.display = 'none';
-
-                // Show a warming-up notice if backend might be cold
-                const warmupToast = setTimeout(() => {
-                    this.showToast('⏳ Server is waking up, please wait a moment...', 'info');
-                }, 8000);
-
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 150000); // 150s timeout
-
-                try {
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ url: query }),
-                        signal: controller.signal
-                    });
-
-                    clearTimeout(warmupToast);
-                    clearTimeout(timeoutId);
-
-                    const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Failed to extract videos');
-                    }
-
-                    this.currentData = data;
-                    this.renderResults(data);
-                    // Cache just the channel name so a page refresh doesn't lose their input
-                    try { sessionStorage.setItem('ytExtractorLastChannel', query); } catch (_) {}
-                    this.showToast(`Successfully extracted ${data.videos.length} videos!`, 'success');
-                    
-                    // Layout change
-                    this.searchContainer.classList.add('active');
-
-                } catch (error) {
-                    clearTimeout(warmupToast);
-                    clearTimeout(timeoutId);
-                    if (error.name === 'AbortError') {
-                        this.showToast('Request timed out. The server may be busy — please try again.', 'error');
-                    } else {
-                        this.showToast(error.message, 'error');
-                    }
-                } finally {
-                    this.setLoading(false);
-                }
-            }
-
-            renderResults(data) {
-                this.channelDisplay.textContent = data.channel;
-                this.countDisplay.textContent = data.count;
-                
-                this.videoGrid.innerHTML = data.videos.map((vid, index) => `
-                    <div class="video-card" style="animation-delay: ${index * 0.05}s">
-                        <div class="thumbnail-container">
-                            <img src="${vid.thumbnail || 'https://via.placeholder.com/320x180?text=No+Thumbnail'}" alt="${vid.title}" class="thumbnail" loading="lazy">
-                        </div>
-                        <div class="video-info">
-                            <h3 class="video-title" title="${vid.title}">${vid.title}</h3>
-                            <div class="card-actions">
-                                <button class="btn-icon copy" data-url="${vid.url}" title="Copy URL">
-                                    <i class="ph ph-copy"></i> Copy
-                                </button>
-                                <a href="${vid.url}" target="_blank" rel="noopener noreferrer" class="btn-icon open" style="text-decoration:none;" title="Open in YouTube">
-                                    <i class="ph ph-arrow-square-out"></i> Open
-                                </a>
-                                <a href="https://cobalt.tools" target="_blank" rel="noopener noreferrer" class="btn-icon download" style="text-decoration:none;" title="Download Video" onclick="navigator.clipboard.writeText('${vid.url}')">
-                                    <i class="ph ph-download-simple"></i> Download
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-
-                this.resultsContainer.style.display = 'flex';
-            }
-
-            async copyToClipboard(text) {
-                try {
-                    await navigator.clipboard.writeText(text);
-                    this.showToast('Link copied to clipboard!', 'success');
-                } catch (err) {
-                    this.showToast('Failed to copy text', 'error');
-                }
-            }
-
-            copyAllLinks() {
-                if (!this.currentData) return;
-                const links = this.currentData.videos.map(v => v.url).join('\n');
-                this.copyToClipboard(links);
-                this.showToast(`Copied ${this.currentData.videos.length} links!`, 'success');
-            }
-
-            downloadTxt() {
-                if (!this.currentData) return;
-                const content = this.currentData.videos.map(v => `${v.title}\n${v.url}\n`).join('\n');
-                this.downloadFile(content, `${this.currentData.channel}_links.txt`, 'text/plain');
-            }
-
-            exportJson() {
-                if (!this.currentData) return;
-                const content = JSON.stringify(this.currentData, null, 2);
-                this.downloadFile(content, `${this.currentData.channel}_data.json`, 'application/json');
+                }, 4000);
             }
 
             downloadFile(content, filename, contentType) {
                 const blob = new Blob([content], { type: contentType });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+                a.href = url; a.download = filename; a.click();
                 URL.revokeObjectURL(url);
                 this.showToast(`Downloaded ${filename}`, 'success');
             }
+
+            async handleScan() {
+                const query = this.input.value.trim();
+                if (!query) { this.showToast('Please enter a channel URL', 'error'); return; }
+
+                localStorage.setItem('yt-tracker-last-channel', query);
+                this.setLoading(true);
+                this.resultsContainer.style.display = 'none';
+
+                try {
+                    // Fetch live channel
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url: query })
+                    });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.error || 'Failed to fetch channel');
+
+                    const liveVideos = data.videos;
+                    const liveIds = new Set(liveVideos.map(v => v.videoId));
+                    const snapshot = this.loadSnapshot(query);
+
+                    if (!snapshot) {
+                        // First scan — save snapshot
+                        this.saveSnapshot(query, liveVideos);
+                        this.updateSnapshotBanner();
+                        this.renderSaved(query, liveVideos.length);
+                        this.showToast(`Snapshot saved! ${liveVideos.length} videos recorded.`, 'success');
+                    } else {
+                        // Second scan — compare
+                        const deleted = snapshot.videoIds
+                            .filter(v => v.videoId && !liveIds.has(v.videoId))
+                            .map(v => ({ ...v, title: v.title || 'Deleted / Private Video' }));
+
+                        this.currentData = { videos: deleted, channel: query };
+                        this.renderDeleted(query, deleted, snapshot, liveVideos.length);
+                        const msg = deleted.length === 0
+                            ? 'No deleted videos found! Channel is intact.'
+                            : `Found ${deleted.length} deleted video${deleted.length > 1 ? 's' : ''}!`;
+                        this.showToast(msg, deleted.length === 0 ? 'success' : 'info');
+                    }
+
+                    this.searchContainer.classList.add('active');
+                } catch (error) {
+                    this.showToast(error.message, 'error');
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+
+            renderSaved(channel, count) {
+                document.getElementById('channelNameDisplay').textContent = channel;
+                document.getElementById('videoCountDisplay').textContent = `${count} videos snapshotted`;
+                document.getElementById('updateSnapshotBtn').style.display = 'none';
+
+                this.videoGrid.innerHTML = `
+                    <div style="grid-column:1/-1; text-align:center; padding:3rem 2rem; background:var(--surface-color); border-radius:20px; border:1px solid var(--border);">
+                        <i class="ph-fill ph-database" style="font-size:4rem; color:var(--secondary); margin-bottom:1rem; display:block;"></i>
+                        <h3 style="font-size:1.5rem; margin-bottom:0.8rem; font-family:'Outfit',sans-serif;">Snapshot Saved! ✅</h3>
+                        <p style="color:var(--text-muted); font-size:1rem; line-height:1.6; max-width:500px; margin:0 auto 1.5rem;">
+                            We've recorded <strong style="color:var(--secondary);">${count} videos</strong> from this channel. Come back later and scan again — we'll automatically detect any videos that have been deleted.
+                        </p>
+                        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+                            <div style="background:rgba(157,78,221,0.1); padding:0.8rem 1.5rem; border-radius:12px; border:1px solid var(--primary-glow); font-size:0.9rem;">
+                                <i class="ph-fill ph-calendar-blank" style="color:var(--secondary);"></i> Saved: <strong>${new Date().toLocaleDateString()}</strong>
+                            </div>
+                            <div style="background:rgba(157,78,221,0.1); padding:0.8rem 1.5rem; border-radius:12px; border:1px solid var(--primary-glow); font-size:0.9rem;">
+                                <i class="ph-fill ph-video" style="color:var(--secondary);"></i> Videos: <strong>${count}</strong>
+                            </div>
+                        </div>
+                    </div>`;
+
+                this.resultsContainer.style.display = 'flex';
+            }
+
+            renderDeleted(channel, deleted, snapshot, liveCount) {
+                const snapDate = new Date(snapshot.savedAt).toLocaleDateString();
+                document.getElementById('channelNameDisplay').textContent = channel;
+                document.getElementById('videoCountDisplay').textContent = deleted.length === 0
+                    ? 'No deleted videos found'
+                    : `${deleted.length} deleted video${deleted.length > 1 ? 's' : ''} detected`;
+                document.getElementById('updateSnapshotBtn').style.display = 'flex';
+
+                if (deleted.length === 0) {
+                    this.videoGrid.innerHTML = `
+                        <div style="grid-column:1/-1; text-align:center; padding:3rem 2rem; background:var(--surface-color); border-radius:20px; border:1px solid var(--border);">
+                            <i class="ph-fill ph-check-circle" style="font-size:4rem; color:var(--success); margin-bottom:1rem; display:block;"></i>
+                            <h3 style="font-size:1.5rem; margin-bottom:0.8rem; font-family:'Outfit',sans-serif;">All Videos Intact! 🎉</h3>
+                            <p style="color:var(--text-muted); font-size:1rem; line-height:1.6; max-width:500px; margin:0 auto;">
+                                No videos have been deleted since your snapshot on <strong>${snapDate}</strong>.
+                                The channel had <strong>${snapshot.videoIds.length}</strong> videos then and has <strong>${liveCount}</strong> now.
+                            </p>
+                        </div>`;
+                } else {
+                    this.videoGrid.innerHTML = `
+                        <div style="grid-column:1/-1; background:rgba(255,77,77,0.07); border:1px solid rgba(255,77,77,0.2); border-radius:12px; padding:1rem 1.5rem; display:flex; align-items:center; gap:1rem; margin-bottom:0.5rem;">
+                            <i class="ph-fill ph-warning" style="color:var(--danger); font-size:1.5rem;"></i>
+                            <span style="font-size:0.9rem; color:var(--text-muted);">Compared against snapshot from <strong style="color:var(--text-main);">${snapDate}</strong> (${snapshot.videoIds.length} videos) vs live (${liveCount} videos)</span>
+                        </div>
+                        ${deleted.map((vid, index) => `
+                        <div class="video-card" style="animation-delay: ${index * 0.05}s">
+                            <div class="thumbnail-container" style="background:rgba(255,77,77,0.1); display:flex; align-items:center; justify-content:center;">
+                                <img src="https://i.ytimg.com/vi/${vid.videoId}/mqdefault.jpg" alt="Deleted" class="thumbnail" onerror="this.style.display='none'">
+                                <div style="position:absolute; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+                                    <i class="ph-fill ph-trash" style="font-size:2.5rem; color:var(--danger); opacity:0.6;"></i>
+                                    <span style="color:var(--danger); font-size:0.75rem; font-weight:600; letter-spacing:1px;">DELETED</span>
+                                </div>
+                            </div>
+                            <div class="video-info">
+                                <h3 class="video-title" style="color:var(--danger);">${vid.title}</h3>
+                                <p style="font-size:0.75rem; color:var(--text-muted); font-family:monospace;">ID: ${vid.videoId}</p>
+                                <div class="card-actions">
+                                    <button class="btn-icon copy" onclick="navigator.clipboard.writeText('${vid.url}'); app.showToast('Copied!', 'success')" title="Copy URL">
+                                        <i class="ph ph-copy"></i> Copy
+                                    </button>
+                                    <a href="https://web.archive.org/web/*/${vid.url}" target="_blank" class="btn-icon open" style="text-decoration:none;">
+                                        <i class="ph ph-clock-clockwise"></i> WayBack
+                                    </a>
+                                </div>
+                            </div>
+                        </div>`).join('')}`;
+                }
+                this.resultsContainer.style.display = 'flex';
+            }
         }
 
-        // Initialize App
         const app = new ExtractorApp();
+        // Update banner on page load if URL is prefilled
+        app.updateSnapshotBanner();
     </script>
 </body>
 </html>
+

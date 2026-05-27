@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free YouTube Channel Extractor Tool</title>
-    <meta name="description" content="Extract all public YouTube channel videos, metadata, and URLs instantly from any channel. Export results as TXT or JSON." />
-    <meta name="keywords" content="extract youtube channel videos,youtube channel scraper,export youtube channel videos,youtube channel url extractor" />
-    <link rel="canonical" href="/channel-extractor" />
+    <title>Free YouTube Thumbnail ZIP Downloader</title>
+    <meta name="description" content="Download multiple YouTube thumbnails as a ZIP. Paste video URLs to fetch HD thumbnails in bulk and download them instantly." />
+    <meta name="keywords" content="youtube thumbnail zip downloader,bulk youtube thumbnail downloader,download thumbnails zip,youtube thumbnail batch" />
+    <link rel="canonical" href="/thumbnail-zip" />
     <meta name="google-site-verification" content="3_CeHzeBYpq9Q8B7JQko2BYovDz8vvmIU0aniYkECk0" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -14,7 +14,7 @@
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "YouTube Channel Extractor",
+        "name": "YouTube Thumbnail ZIP Downloader",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Web",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
@@ -27,26 +27,18 @@
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "How do I extract all videos from a YouTube channel?",
+            "name": "How do I download multiple YouTube thumbnails as a ZIP?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Paste a YouTube channel URL or handle (like @MrBeast) and click Extract. The tool lists all public uploads and lets you export URLs and metadata."
+              "text": "Paste multiple YouTube video URLs (one per line) and click Download ZIP. The tool fetches the best available thumbnail for each video and bundles them."
             }
           },
           {
             "@type": "Question",
-            "name": "Can I export YouTube channel videos as a file?",
+            "name": "What thumbnail quality do you download?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Export to TXT for a simple URL list or to JSON for structured metadata."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Does this work without the YouTube API?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. It extracts publicly available data and does not require you to configure a YouTube Data API key."
+              "text": "We attempt max resolution first, then fall back to a high-quality thumbnail when max resolution is not available."
             }
           }
         ]
@@ -813,15 +805,15 @@
                         <strong>Core Extractors</strong>
                         <a href="/channel-extractor">Channel Extractor</a>
                         <a href="/playlist-extractor">Playlist Extractor</a>
-                        <a href="/shorts-extractor">Shorts Extractor</a>
-                        <a href="/deleted-video-tracker">Deleted Video Tracker</a>
+                        <a href="shorts-extractor.html">Shorts Extractor</a>
+                        <a href="deleted-video-tracker.html">Deleted Video Tracker</a>
                     </div>
                     <div class="dropdown-col">
                         <strong>Export & Data</strong>
                         <a href="/thumbnail-downloader">Thumbnail Downloader</a>
                         <a href="/thumbnail-zip">Thumbnail ZIP Downloader</a>
-                        <a href="/description-exporter">Description Exporter</a>
-                        <a href="/tags-exporter">Video Tags Exporter</a>
+                        <a href="description-exporter.html">Description Exporter</a>
+                        <a href="tags-exporter.html">Video Tags Exporter</a>
                         <a href="/comments-exporter">Comments Exporter</a>
                     </div>
                 </div>
@@ -831,72 +823,59 @@
     </header>
 
     <main>
+        <section style="max-width: 980px; margin: 0 auto; text-align: center;">
+            <h1 style="font-size: 2.6rem; line-height: 1.2; margin-bottom: 0.8rem;">YouTube Thumbnail ZIP Downloader</h1>
+            <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin: 0 auto 1.6rem auto; max-width: 940px;">
+                Download YouTube thumbnails in bulk. Paste multiple video URLs to preview each thumbnail, select the ones you want, then download them all as a single ZIP — perfect for design workflows, archives, and research datasets.
+            </p>
+            <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; margin-bottom: 1.2rem;">
+                <a href="/thumbnail-downloader" class="btn-action" style="text-decoration:none;">
+                    <i class="ph ph-image"></i> Single Thumbnail Downloader
+                </a>
+                <a href="/channel-extractor" class="btn-action" style="text-decoration:none;">
+                    <i class="ph ph-youtube-logo"></i> Channel Extractor
+                </a>
+            </div>
+        </section>
         <div class="search-container" id="searchContainer">
-            <div class="input-wrapper">
-                <i class="ph ph-magnifying-glass input-icon"></i>
-                <input type="text" id="channelInput" placeholder="Enter YouTube channel URL or handle to extract all public videos (e.g. https://www.youtube.com/@MrBeast)" autocomplete="off" spellcheck="false">
-                <button class="btn-extract" id="extractBtn">
-                    <span>Extract</span>
-                    <i class="ph-bold ph-arrow-right"></i>
-                    <div class="spinner" id="btnSpinner"></div>
+            <div class="input-wrapper" style="max-width: 800px; display: flex; flex-direction: column; gap: 1rem; width: 100%;">
+                <textarea id="channelInput" placeholder="Enter multiple YouTube video URLs (one per line) to download all thumbnails as a ZIP file..." style="width: 100%; height: 200px; padding: 1.5rem; border-radius: 12px; font-size: 0.95rem; background: var(--surface-color); color: var(--text-main); border: 1px solid var(--border); outline: none; resize: vertical;" spellcheck="false"></textarea>
+                <button class="btn-extract" id="showBtn" style="position: relative; width: auto; align-self: center; transform: none; padding: 1rem 3rem;">
+                    <span>Show Thumbnails</span>
+                    <i class="ph-bold ph-image"></i>
                 </button>
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center;">
-                Instantly extract all public video links from any YouTube channel.
+                Paste multiple URLs to load their thumbnails and download them.
             </p>
         </div>
 
-        <div class="results-container" id="resultsContainer">
-            <div class="results-header">
-                <div class="results-info">
-                    <div class="channel-badge">
-                        <i class="ph-fill ph-check-circle"></i>
-                        <span id="channelNameDisplay">@channel</span>
-                    </div>
-                    <span style="color: var(--text-muted); font-size: 0.95rem;">
-                        <span id="videoCountDisplay">0</span> videos found
-                    </span>
-                </div>
-                <div class="actions">
-                    <button class="btn-action" id="copyAllBtn">
-                        <i class="ph ph-copy"></i> Copy All
-                    </button>
-                    <button class="btn-action" id="saveTxtBtn">
-                        <i class="ph ph-file-text"></i> Save TXT
-                    </button>
-                    <button class="btn-action" id="saveJsonBtn">
-                        <i class="ph ph-code"></i> JSON
+        <div id="resultsArea" style="display: none; flex-direction: column; gap: 1.5rem; width: 100%; animation: fadeIn 0.5s ease forwards; margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                <h2 style="font-size: 1.5rem; font-family: 'Outfit', sans-serif;">Select Thumbnails</h2>
+                <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+                    <button id="selectAllBtn" class="btn-action"><i class="ph-bold ph-check-square-offset"></i> Select All</button>
+                    <button id="deselectAllBtn" class="btn-action"><i class="ph-bold ph-square"></i> Deselect All</button>
+                    <button id="invertBtn" class="btn-action"><i class="ph-bold ph-arrows-left-right"></i> Invert</button>
+                    <button id="downloadSelectedBtn" class="btn-extract" style="position: static; transform: none; margin-left: 0.5rem;">
+                        <span>Download Selected (ZIP)</span>
+                        <i class="ph-bold ph-download-simple"></i>
+                        <div class="spinner" id="btnSpinner" style="display: none;"></div>
                     </button>
                 </div>
             </div>
-
-            <div class="video-grid" id="videoGrid">
-                <!-- Video cards will be injected here -->
+            <div id="thumbnailGrid" class="video-grid">
+                <!-- Thumbnails injected here -->
             </div>
         </div>
-    </main>
+
+        </main>
 
     <div class="landing-content">
         <!-- Hero text injected in the header context -->
-        <div style="text-align: center; max-width: 900px; margin: 0 auto -2rem auto; padding: 0 1.5rem;">
-            <h1 style="font-size: 3rem; line-height: 1.15; margin-bottom: 1rem;">YouTube Channel Extractor</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.2rem;">
-                Extract YouTube channel videos in seconds. Paste a channel handle like <strong>@MrBeast</strong> or a channel URL to export every public upload with titles, thumbnails, and video URLs.
-            </p>
-            <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
-                This YouTube channel scraper is built for speed and export: copy links, download TXT, or export JSON for analysis, research, and content audits.
-            </p>
-            <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap;">
-                <a href="/playlist-extractor" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-list-dashes"></i> Playlist Extractor
-                </a>
-                <a href="/thumbnail-downloader" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-image"></i> Thumbnail Downloader
-                </a>
-                <a href="/comments-exporter" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-chats-circle"></i> Comments Exporter
-                </a>
-            </div>
+        <div style="text-align: center; max-width: 800px; margin: 0 auto -2rem auto; padding: 0 1.5rem;">
+            <h2 style="font-size: 3rem; line-height: 1.2; margin-bottom: 1rem;">Extract Every YouTube Video Instantly. Zero Limits.</h2>
+            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem;">The ultimate scraping tool to pull all video links and metadata from any YouTube channel in seconds. Free forever, with no signup required.</p>
         </div>
 
         <section class="social-proof">
@@ -1032,92 +1011,112 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        const API_URL = '/api/channel';
-        const HEALTH_URL = '/health';
 
-        // Wake up the Render backend immediately on page load (free tier goes to sleep)
-        (function pingBackend() {
-            fetch(HEALTH_URL, { method: 'GET', mode: 'cors' }).catch(() => {});
-        })();
+        const API_URL = '/api/thumbnail-zip';
+        const HEALTH_URL = '/health';
 
         class ExtractorApp {
             constructor() {
                 this.input = document.getElementById('channelInput');
-                this.extractBtn = document.getElementById('extractBtn');
-                this.btnText = this.extractBtn.querySelector('span');
-                this.btnIcon = this.extractBtn.querySelector('.ph-arrow-right');
+                this.showBtn = document.getElementById('showBtn');
+                this.resultsArea = document.getElementById('resultsArea');
+                this.thumbnailGrid = document.getElementById('thumbnailGrid');
+                this.selectAllBtn = document.getElementById('selectAllBtn');
+                this.deselectAllBtn = document.getElementById('deselectAllBtn');
+                this.invertBtn = document.getElementById('invertBtn');
+                this.downloadBtn = document.getElementById('downloadSelectedBtn');
+                this.btnText = this.downloadBtn.querySelector('span');
+                this.btnIcon = this.downloadBtn.querySelector('.ph-download-simple');
                 this.spinner = document.getElementById('btnSpinner');
-                
-                this.searchContainer = document.getElementById('searchContainer');
-                this.resultsContainer = document.getElementById('resultsContainer');
-                this.videoGrid = document.getElementById('videoGrid');
-                
-                this.channelDisplay = document.getElementById('channelNameDisplay');
-                this.countDisplay = document.getElementById('videoCountDisplay');
                 this.toastContainer = document.getElementById('toastContainer');
-
-                this.copyAllBtn = document.getElementById('copyAllBtn');
-                this.saveTxtBtn = document.getElementById('saveTxtBtn');
-                this.saveJsonBtn = document.getElementById('saveJsonBtn');
-
-                this.currentData = null;
-                this.serverReady = false;
-
+                
+                this.thumbnailsData = [];
                 this.bindEvents();
-                this.checkServerReady();
-                this.restoreCachedResults();
-            }
-
-            async checkServerReady() {
-                try {
-                    const res = await fetch(HEALTH_URL, { method: 'GET', mode: 'cors' });
-                    if (res.ok) this.serverReady = true;
-                } catch (_) {
-                    this.serverReady = false;
-                }
-            }
-
-            // Restore the channel name if the user accidentally refreshes the page
-            restoreCachedResults() {
-                try {
-                    const cachedName = sessionStorage.getItem('ytExtractorLastChannel');
-                    if (cachedName) {
-                        this.input.value = cachedName;
-                    }
-                } catch (_) {}
             }
 
             bindEvents() {
-                this.extractBtn.addEventListener('click', () => this.handleExtract());
-                this.input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.handleExtract();
-                });
+                this.showBtn.addEventListener('click', () => this.handleShow());
+                this.selectAllBtn.addEventListener('click', () => this.handleSelectAll(true));
+                this.deselectAllBtn.addEventListener('click', () => this.handleSelectAll(false));
+                this.invertBtn.addEventListener('click', () => this.handleInvert());
+                this.downloadBtn.addEventListener('click', () => this.handleDownload());
+            }
 
-                // Header actions
-                this.copyAllBtn.addEventListener('click', () => this.copyAllLinks());
-                this.saveTxtBtn.addEventListener('click', () => this.downloadTxt());
-                this.saveJsonBtn.addEventListener('click', () => this.exportJson());
+            extractVideoId(url) {
+                const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|shorts\/)([a-zA-Z0-9_-]{11})/);
+                return match ? match[1] : null;
+            }
 
-                // Individual card actions (using event delegation)
-                this.videoGrid.addEventListener('click', (e) => {
-                    const copyBtn = e.target.closest('.copy');
-                    if (copyBtn) {
-                        const url = copyBtn.getAttribute('data-url');
-                        if (url) {
-                            this.copyToClipboard(url);
-                        }
-                    }
-                });
+            handleShow() {
+                const query = this.input.value.trim();
+                if (!query) { this.showToast('Please enter at least one URL', 'error'); return; }
+
+                const urls = query.split('\n').map(l => l.trim()).filter(l => l);
+                this.thumbnailsData = urls.map(url => {
+                    const videoId = this.extractVideoId(url);
+                    return { url, videoId, selected: true };
+                }).filter(item => item.videoId);
+
+                if (this.thumbnailsData.length === 0) {
+                    this.showToast('No valid YouTube URLs found.', 'error');
+                    return;
+                }
+
+                this.renderGrid();
+                this.resultsArea.style.display = 'flex';
+                this.updateDownloadBtn();
+                
+                this.resultsArea.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            renderGrid() {
+                this.thumbnailGrid.innerHTML = this.thumbnailsData.map((item, index) => `
+                    <div class="video-card" style="cursor: pointer; border: 2px solid ${item.selected ? 'var(--primary)' : 'var(--border)'}" onclick="app.toggleSelect(${index})">
+                        <div class="thumbnail-container">
+                            <img class="thumbnail" src="https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg" alt="Thumbnail">
+                            <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); padding: 5px; border-radius: 5px; display: ${item.selected ? 'block' : 'none'}; color: var(--primary);">
+                                <i class="ph-fill ph-check-circle" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                        <div class="video-info" style="padding: 0.8rem; text-align: center;">
+                            <p class="video-title" style="font-size: 0.9rem;">${item.videoId}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            toggleSelect(index) {
+                this.thumbnailsData[index].selected = !this.thumbnailsData[index].selected;
+                this.renderGrid();
+                this.updateDownloadBtn();
+            }
+
+            handleSelectAll(select) {
+                this.thumbnailsData.forEach(item => item.selected = select);
+                this.renderGrid();
+                this.updateDownloadBtn();
+            }
+
+            handleInvert() {
+                this.thumbnailsData.forEach(item => item.selected = !item.selected);
+                this.renderGrid();
+                this.updateDownloadBtn();
+            }
+
+            updateDownloadBtn() {
+                const count = this.thumbnailsData.filter(i => i.selected).length;
+                this.btnText.textContent = `Download Selected (${count})`;
+                this.downloadBtn.disabled = count === 0;
             }
 
             setLoading(isLoading) {
-                this.extractBtn.disabled = isLoading;
+                this.downloadBtn.disabled = isLoading;
                 if (isLoading) {
-                    this.btnText.textContent = 'Extracting...';
+                    this.btnText.textContent = 'Zipping...';
                     this.btnIcon.style.display = 'none';
                     this.spinner.style.display = 'block';
                 } else {
-                    this.btnText.textContent = 'Extract';
+                    this.updateDownloadBtn();
                     this.btnIcon.style.display = 'block';
                     this.spinner.style.display = 'none';
                 }
@@ -1126,155 +1125,50 @@
             showToast(message, type = 'info') {
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
-                
-                let iconClass = 'ph-info';
-                if (type === 'success') iconClass = 'ph-check-circle';
-                if (type === 'error') iconClass = 'ph-warning-circle';
-
-                toast.innerHTML = `
-                    <i class="ph-fill ${iconClass}"></i>
-                    <span>${message}</span>
-                `;
-
+                toast.innerHTML = `<i class="ph-fill ${type === 'success' ? 'ph-check-circle' : 'ph-warning-circle'}"></i><span>${message}</span>`;
                 this.toastContainer.appendChild(toast);
-
                 setTimeout(() => {
                     toast.style.animation = 'slideOut 0.3s ease forwards';
                     setTimeout(() => toast.remove(), 300);
                 }, 3000);
             }
 
-            async handleExtract() {
-                const query = this.input.value.trim();
-                if (!query) {
-                    this.showToast('Please enter a channel name or URL', 'error');
-                    this.input.focus();
-                    return;
-                }
+            async handleDownload() {
+                const selectedUrls = this.thumbnailsData.filter(i => i.selected).map(i => i.url);
+                if (selectedUrls.length === 0) return;
 
                 this.setLoading(true);
-                this.resultsContainer.style.display = 'none';
-
-                // Show a warming-up notice if backend might be cold
-                const warmupToast = setTimeout(() => {
-                    this.showToast('⏳ Server is waking up, please wait a moment...', 'info');
-                }, 8000);
-
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 150000); // 150s timeout
 
                 try {
                     const response = await fetch(API_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ url: query }),
-                        signal: controller.signal
+                        body: JSON.stringify({ urls: selectedUrls })
                     });
-
-                    clearTimeout(warmupToast);
-                    clearTimeout(timeoutId);
-
-                    const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Failed to extract videos');
-                    }
-
-                    this.currentData = data;
-                    this.renderResults(data);
-                    // Cache just the channel name so a page refresh doesn't lose their input
-                    try { sessionStorage.setItem('ytExtractorLastChannel', query); } catch (_) {}
-                    this.showToast(`Successfully extracted ${data.videos.length} videos!`, 'success');
                     
-                    // Layout change
-                    this.searchContainer.classList.add('active');
-
-                } catch (error) {
-                    clearTimeout(warmupToast);
-                    clearTimeout(timeoutId);
-                    if (error.name === 'AbortError') {
-                        this.showToast('Request timed out. The server may be busy — please try again.', 'error');
-                    } else {
-                        this.showToast(error.message, 'error');
+                    if (!response.ok) {
+                        const data = await response.json();
+                        throw new Error(data.error || 'Failed to generate ZIP');
                     }
+
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'thumbnails.zip';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    
+                    this.showToast('ZIP downloaded successfully!', 'success');
+                } catch (error) {
+                    this.showToast(error.message, 'error');
                 } finally {
                     this.setLoading(false);
                 }
             }
-
-            renderResults(data) {
-                this.channelDisplay.textContent = data.channel;
-                this.countDisplay.textContent = data.count;
-                
-                this.videoGrid.innerHTML = data.videos.map((vid, index) => `
-                    <div class="video-card" style="animation-delay: ${index * 0.05}s">
-                        <div class="thumbnail-container">
-                            <img src="${vid.thumbnail || 'https://via.placeholder.com/320x180?text=No+Thumbnail'}" alt="${vid.title}" class="thumbnail" loading="lazy">
-                        </div>
-                        <div class="video-info">
-                            <h3 class="video-title" title="${vid.title}">${vid.title}</h3>
-                            <div class="card-actions">
-                                <button class="btn-icon copy" data-url="${vid.url}" title="Copy URL">
-                                    <i class="ph ph-copy"></i> Copy
-                                </button>
-                                <a href="${vid.url}" target="_blank" rel="noopener noreferrer" class="btn-icon open" style="text-decoration:none;" title="Open in YouTube">
-                                    <i class="ph ph-arrow-square-out"></i> Open
-                                </a>
-                                <a href="https://cobalt.tools" target="_blank" rel="noopener noreferrer" class="btn-icon download" style="text-decoration:none;" title="Download Video" onclick="navigator.clipboard.writeText('${vid.url}')">
-                                    <i class="ph ph-download-simple"></i> Download
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-
-                this.resultsContainer.style.display = 'flex';
-            }
-
-            async copyToClipboard(text) {
-                try {
-                    await navigator.clipboard.writeText(text);
-                    this.showToast('Link copied to clipboard!', 'success');
-                } catch (err) {
-                    this.showToast('Failed to copy text', 'error');
-                }
-            }
-
-            copyAllLinks() {
-                if (!this.currentData) return;
-                const links = this.currentData.videos.map(v => v.url).join('\n');
-                this.copyToClipboard(links);
-                this.showToast(`Copied ${this.currentData.videos.length} links!`, 'success');
-            }
-
-            downloadTxt() {
-                if (!this.currentData) return;
-                const content = this.currentData.videos.map(v => `${v.title}\n${v.url}\n`).join('\n');
-                this.downloadFile(content, `${this.currentData.channel}_links.txt`, 'text/plain');
-            }
-
-            exportJson() {
-                if (!this.currentData) return;
-                const content = JSON.stringify(this.currentData, null, 2);
-                this.downloadFile(content, `${this.currentData.channel}_data.json`, 'application/json');
-            }
-
-            downloadFile(content, filename, contentType) {
-                const blob = new Blob([content], { type: contentType });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                this.showToast(`Downloaded ${filename}`, 'success');
-            }
         }
-
-        // Initialize App
         const app = new ExtractorApp();
+
     </script>
 </body>
 </html>

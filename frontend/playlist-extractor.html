@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free YouTube Channel Extractor Tool</title>
-    <meta name="description" content="Extract all public YouTube channel videos, metadata, and URLs instantly from any channel. Export results as TXT or JSON." />
-    <meta name="keywords" content="extract youtube channel videos,youtube channel scraper,export youtube channel videos,youtube channel url extractor" />
-    <link rel="canonical" href="/channel-extractor" />
+    <title>Free YouTube Playlist Extractor Tool</title>
+    <meta name="description" content="Extract YouTube playlist videos and metadata instantly. Export playlist URLs, titles, and thumbnails to TXT or JSON for free." />
+    <meta name="keywords" content="youtube playlist downloader,export youtube playlist,extract playlist videos,youtube playlist scraper" />
+    <link rel="canonical" href="/playlist-extractor" />
     <meta name="google-site-verification" content="3_CeHzeBYpq9Q8B7JQko2BYovDz8vvmIU0aniYkECk0" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -14,7 +14,7 @@
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "YouTube Channel Extractor",
+        "name": "YouTube Playlist Extractor",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Web",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
@@ -27,26 +27,18 @@
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "How do I extract all videos from a YouTube channel?",
+            "name": "How do I extract videos from a YouTube playlist?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Paste a YouTube channel URL or handle (like @MrBeast) and click Extract. The tool lists all public uploads and lets you export URLs and metadata."
+              "text": "Paste a YouTube playlist URL that contains ?list=... and click Extract. The tool lists videos with titles, thumbnails, and URLs."
             }
           },
           {
             "@type": "Question",
-            "name": "Can I export YouTube channel videos as a file?",
+            "name": "Can I export the playlist data?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Export to TXT for a simple URL list or to JSON for structured metadata."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Does this work without the YouTube API?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. It extracts publicly available data and does not require you to configure a YouTube Data API key."
+              "text": "Yes. Export to TXT for URLs or JSON for structured metadata."
             }
           }
         ]
@@ -831,10 +823,24 @@
     </header>
 
     <main>
+        <section style="max-width: 980px; margin: 0 auto; text-align: center;">
+            <h1 style="font-size: 2.6rem; line-height: 1.2; margin-bottom: 0.8rem;">YouTube Playlist Extractor</h1>
+            <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin: 0 auto 2rem auto; max-width: 900px;">
+                Extract playlist videos from any YouTube playlist URL. This playlist scraper exports every video link with titles and thumbnails so you can audit content, build datasets, and analyze playlists faster.
+            </p>
+            <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; margin-bottom: 1.2rem;">
+                <a href="/channel-extractor" class="btn-action" style="text-decoration:none;">
+                    <i class="ph ph-youtube-logo"></i> Channel Extractor
+                </a>
+                <a href="/thumbnail-downloader" class="btn-action" style="text-decoration:none;">
+                    <i class="ph ph-image"></i> Thumbnail Downloader
+                </a>
+            </div>
+        </section>
         <div class="search-container" id="searchContainer">
             <div class="input-wrapper">
                 <i class="ph ph-magnifying-glass input-icon"></i>
-                <input type="text" id="channelInput" placeholder="Enter YouTube channel URL or handle to extract all public videos (e.g. https://www.youtube.com/@MrBeast)" autocomplete="off" spellcheck="false">
+                <input type="text" id="channelInput" placeholder="Enter YouTube playlist URL to extract all playlist videos (e.g. https://www.youtube.com/playlist?list=PL123456789)" autocomplete="off" spellcheck="false">
                 <button class="btn-extract" id="extractBtn">
                     <span>Extract</span>
                     <i class="ph-bold ph-arrow-right"></i>
@@ -842,7 +848,7 @@
                 </button>
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center;">
-                Instantly extract all public video links from any YouTube channel.
+                Pull all playlist videos and metadata.
             </p>
         </div>
 
@@ -864,6 +870,9 @@
                     <button class="btn-action" id="saveTxtBtn">
                         <i class="ph ph-file-text"></i> Save TXT
                     </button>
+                    <button class="btn-action" id="saveCsvBtn">
+                        <i class="ph ph-file-csv"></i> CSV
+                    </button>
                     <button class="btn-action" id="saveJsonBtn">
                         <i class="ph ph-code"></i> JSON
                     </button>
@@ -878,25 +887,9 @@
 
     <div class="landing-content">
         <!-- Hero text injected in the header context -->
-        <div style="text-align: center; max-width: 900px; margin: 0 auto -2rem auto; padding: 0 1.5rem;">
-            <h1 style="font-size: 3rem; line-height: 1.15; margin-bottom: 1rem;">YouTube Channel Extractor</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.2rem;">
-                Extract YouTube channel videos in seconds. Paste a channel handle like <strong>@MrBeast</strong> or a channel URL to export every public upload with titles, thumbnails, and video URLs.
-            </p>
-            <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
-                This YouTube channel scraper is built for speed and export: copy links, download TXT, or export JSON for analysis, research, and content audits.
-            </p>
-            <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap;">
-                <a href="/playlist-extractor" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-list-dashes"></i> Playlist Extractor
-                </a>
-                <a href="/thumbnail-downloader" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-image"></i> Thumbnail Downloader
-                </a>
-                <a href="/comments-exporter" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-chats-circle"></i> Comments Exporter
-                </a>
-            </div>
+        <div style="text-align: center; max-width: 800px; margin: 0 auto -2rem auto; padding: 0 1.5rem;">
+            <h2 style="font-size: 3rem; line-height: 1.2; margin-bottom: 1rem;">Extract Every YouTube Video Instantly. Zero Limits.</h2>
+            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem;">The ultimate scraping tool to pull all video links and metadata from any YouTube channel in seconds. Free forever, with no signup required.</p>
         </div>
 
         <section class="social-proof">
@@ -1032,7 +1025,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        const API_URL = '/api/channel';
+        const API_URL = '/api/playlist';
         const HEALTH_URL = '/health';
 
         // Wake up the Render backend immediately on page load (free tier goes to sleep)

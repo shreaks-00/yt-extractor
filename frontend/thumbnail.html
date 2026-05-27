@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free YouTube Thumbnail Downloader (HD)</title>
+    <meta name="description" content="Download YouTube thumbnails in HD instantly. Paste any video URL to extract max resolution thumbnail images for free." />
+    <meta name="keywords" content="youtube thumbnail downloader,download youtube thumbnail hd,youtube thumbnail extractor" />
+    <link rel="canonical" href="/thumbnail-downloader" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "YouTube Thumbnail Downloader",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I download a YouTube thumbnail in HD?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Paste a YouTube video URL and click Download. The tool tries max resolution first, then falls back to the best available thumbnail."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What thumbnail sizes are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The downloader attempts maxresdefault first, then uses hqdefault when max resolution is not available."
+            }
+          }
+        ]
+      }
+    </script>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --surface-color: rgba(20, 20, 25, 0.7);
+            --surface-hover: rgba(30, 30, 38, 0.9);
+            --primary: #9d4edd;
+            --primary-glow: rgba(157, 78, 221, 0.5);
+            --secondary: #e0aaff;
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --danger: #ff4d4d;
+            --success: #00e676;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(12px);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bg-glow {
+            position: fixed; top: 50%; left: 50%; width: 80vw; height: 80vh;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 60%);
+            opacity: 0.15; z-index: -1; filter: blur(100px); pointer-events: none;
+        }
+
+        .grid-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px; opacity: 0.3; z-index: -2; pointer-events: none;
+        }
+
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(5, 5, 5, 0.8); backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: white; }
+        .logo i { font-size: 2rem; color: var(--primary); filter: drop-shadow(0 0 10px var(--primary-glow)); }
+        .logo h1 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; }
+
+        nav { display: flex; gap: 1.5rem; }
+        nav a { color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        nav a:hover { color: var(--primary); }
+
+        main { flex: 1; max-width: 1000px; margin: 0 auto; padding: 4rem 1.5rem; width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+        h2 { font-family: 'Outfit', sans-serif; font-size: 2.5rem; margin-bottom: 1rem; text-align: center; }
+        p.subtitle { color: var(--text-muted); font-size: 1.1rem; text-align: center; margin-bottom: 3rem; }
+
+        .search-container { position: relative; width: 100%; max-width: 700px; margin-bottom: 3rem; }
+        .input-icon { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: var(--text-muted); }
+        input {
+            width: 100%; padding: 1.2rem 1.5rem 1.2rem 4rem; font-size: 1.1rem;
+            background: var(--surface-color); border: 1px solid var(--border); border-radius: 50px;
+            color: var(--text-main); outline: none; transition: all 0.3s ease;
+        }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
+        
+        .btn-extract {
+            position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--primary), #7b2cbf);
+            color: white; border: none; padding: 0.8rem 2rem; border-radius: 50px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; gap: 0.5rem; align-items: center;
+        }
+        .btn-extract:hover { transform: translateY(-50%) scale(1.05); box-shadow: 0 0 20px var(--primary-glow); }
+
+        .results { display: none; width: 100%; animation: fadeIn 0.5s; flex-direction: column; gap: 2rem; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .resolution-card {
+            background: var(--surface-color); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        .img-container { width: 100%; background: #111; display: flex; justify-content: center; }
+        .img-container img { max-width: 100%; height: auto; }
+
+        .card-info { padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .card-info div h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
+        .card-info div p { color: var(--text-muted); font-size: 0.9rem; }
+        
+        .btn-download {
+            background: var(--surface-color); border: 1px solid var(--primary); color: white;
+            padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 500;
+            display: flex; gap: 0.5rem; align-items: center; transition: all 0.2s;
+            text-decoration: none;
+        }
+        .btn-download:hover { background: rgba(157, 78, 221, 0.2); }
+
+        .error-msg { color: var(--danger); text-align: center; display: none; font-weight: 500; margin-top: -2rem; margin-bottom: 2rem; }
+
+    
+        /* Nav Dropdown */
+        .dropdown { position: relative; display: inline-block; padding-bottom: 1.5rem; margin-bottom: -1.5rem; }
+        .dropbtn { background: none; border: none; color: var(--text-muted); font-size: 1rem; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 0.3rem; transition: color 0.3s; padding: 0; }
+        .dropbtn:hover, .dropdown:hover .dropbtn { color: var(--primary); }
+        .dropdown-content { display: none; position: absolute; right: 0; background: rgba(15, 15, 20, 0.98); min-width: 480px; box-shadow: 0px 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(16px); border: 1px solid rgba(157, 78, 221, 0.3); border-radius: 12px; padding: 1.5rem; z-index: 1000; grid-template-columns: 1fr 1fr; gap: 1.5rem; top: 100%; margin-top: 0; }
+        .dropdown:hover .dropdown-content { display: grid; animation: fadeInNav 0.2s ease forwards; }
+        .dropdown-col strong { display: block; color: var(--text-main); margin-bottom: 0.8rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+        .dropdown-col a { color: var(--text-muted); padding: 0.4rem 0; text-decoration: none; display: block; font-size: 0.95rem; transition: all 0.2s; }
+        .dropdown-col a:hover { color: var(--secondary); padding-left: 5px; }
+        @keyframes fadeInNav { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) {
+            .dropdown-content { position: fixed; top: 70px; left: 1rem; right: 1rem; min-width: auto; grid-template-columns: 1fr; max-height: 80vh; overflow-y: auto; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="grid-bg"></div>
+
+    <header>
+        <a href="/" class="logo">
+            <i class="ph-fill ph-youtube-logo"></i>
+            <h1>Extractor Pro</h1>
+        </a>
+        <nav>
+            <a href="/">Home</a>
+            <div class="dropdown">
+                <button class="dropbtn">All Tools <i class="ph-bold ph-caret-down"></i></button>
+                <div class="dropdown-content">
+                    <div class="dropdown-col">
+                        <strong>Core Extractors</strong>
+                        <a href="/channel-extractor">Channel Extractor</a>
+                        <a href="/playlist-extractor">Playlist Extractor</a>
+                        <a href="shorts-extractor.html">Shorts Extractor</a>
+                        <a href="deleted-video-tracker.html">Deleted Video Tracker</a>
+                    </div>
+                    <div class="dropdown-col">
+                        <strong>Export & Data</strong>
+                        <a href="/thumbnail-downloader">Thumbnail Downloader</a>
+                        <a href="thumbnail-zip.html">Thumbnail ZIP Downloader</a>
+                        <a href="description-exporter.html">Description Exporter</a>
+                        <a href="tags-exporter.html">Video Tags Exporter</a>
+                        <a href="/comments-exporter">Comments Exporter</a>
+                    </div>
+                </div>
+            </div>
+        <a href="https://www.youtube.com" target="_blank" style="color: #ff4d4d; display: flex; align-items: center; gap: 0.4rem; font-weight: 600;"><i class="ph-fill ph-youtube-logo" style="font-size: 1.2rem;"></i> YouTube</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1 style="font-family:'Outfit',sans-serif;font-size:2.7rem;margin:0 0 1rem 0;text-align:center;">YouTube Thumbnail Downloader</h1>
+        <p class="subtitle" style="max-width: 860px; line-height: 1.7;">
+            Download YouTube thumbnails in HD with one click. Paste any YouTube video link to extract the best available thumbnail (max resolution when possible), perfect for design mockups, analysis, and archiving.
+        </p>
+
+        <section style="width:100%; max-width: 980px; margin: 0 auto 2.2rem auto;">
+            <h2 style="font-family:'Outfit',sans-serif; font-size:1.6rem; margin: 0 0 0.8rem 0; text-align:center;">Download YouTube Thumbnails in HD (Fast + Free)</h2>
+            <p style="color: var(--text-muted); line-height: 1.75; margin-bottom: 1rem;">
+                A YouTube thumbnail is often the most important visual asset for a video: it drives clicks, communicates context, and becomes the reference image used in articles, reports, and presentations. This free YouTube thumbnail downloader lets you extract the best available thumbnail directly from a YouTube video URL. You can use it to download thumbnails for inspiration, to analyze how top creators design high-CTR thumbnails, or to build a dataset for testing creative variations.
+            </p>
+            <p style="color: var(--text-muted); line-height: 1.75; margin-bottom: 1rem;">
+                If a video has a max-resolution thumbnail, the tool will prefer that. When max resolution is not available, it falls back to the best high-quality option. This gives you a consistent workflow: paste a link, fetch the preview, and download the image you need without installing anything or signing up.
+            </p>
+            <h3 style="font-family:'Outfit',sans-serif; font-size:1.2rem; margin: 1.2rem 0 0.6rem;">Common use cases</h3>
+            <ul style="color: var(--text-muted); line-height: 1.75; margin: 0 0 1rem 1.2rem;">
+                <li><strong style="color:#fff;">Thumbnail research</strong> — compare styles across niches (gaming, tech, AI, education) and spot patterns in color, faces, text, and composition.</li>
+                <li><strong style="color:#fff;">Competitive audits</strong> — collect thumbnails from competitor videos to understand their creative strategy over time.</li>
+                <li><strong style="color:#fff;">Brand libraries</strong> — archive thumbnails for internal decks, case studies, and documentation.</li>
+                <li><strong style="color:#fff;">Dataset building</strong> — pair thumbnails with video IDs to create a structured set for analysis.</li>
+            </ul>
+            <h3 style="font-family:'Outfit',sans-serif; font-size:1.2rem; margin: 1.2rem 0 0.6rem;">How to download a thumbnail</h3>
+            <ol style="color: var(--text-muted); line-height: 1.75; margin: 0 0 1rem 1.2rem;">
+                <li>Copy a YouTube video link (any standard watch URL works).</li>
+                <li>Paste it into the input below and click <strong style="color:#fff;">Fetch</strong>.</li>
+                <li>Preview the images and click <strong style="color:#fff;">Download</strong> for the resolution you want.</li>
+            </ol>
+            <h3 style="font-family:'Outfit',sans-serif; font-size:1.2rem; margin: 1.2rem 0 0.6rem;">Related tools</h3>
+            <p style="color: var(--text-muted); line-height: 1.75; margin-bottom: 0;">
+                If you’re collecting thumbnails in bulk, use the <a href="/thumbnail-zip" style="color:var(--secondary);">Thumbnail ZIP Downloader</a>.
+                If you want to build a list of video URLs first, start with the <a href="/channel-extractor" style="color:var(--secondary);">Channel Extractor</a> or <a href="/playlist-extractor" style="color:var(--secondary);">Playlist Extractor</a>.
+            </p>
+        </section>
+
+        <div class="search-container">
+            <i class="ph ph-link input-icon"></i>
+            <input type="text" id="videoInput" placeholder="Enter YouTube video URL to download HD thumbnail instantly (e.g. https://www.youtube.com/watch?v=...)">
+            <button class="btn-extract" id="fetchBtn">Fetch</button>
+        </div>
+
+        <div class="error-msg" id="errorMsg">Invalid YouTube URL. Please try again.</div>
+
+        <div class="results" id="results">
+            <!-- HD Thumbnail -->
+            <div class="resolution-card">
+                <div class="img-container">
+                    <img id="imgHd" src="" alt="HD Thumbnail">
+                </div>
+                <div class="card-info">
+                    <div>
+                        <h3>Maximum Resolution (HD)</h3>
+                        <p>1280x720 / 1920x1080 (if available)</p>
+                    </div>
+                    <a href="#" id="dlHd" class="btn-download" target="_blank" download="thumbnail_hd.jpg">
+                        <i class="ph ph-download-simple"></i> Download
+                    </a>
+                </div>
+            </div>
+
+            <!-- SD Thumbnail -->
+            <div class="resolution-card">
+                <div class="img-container">
+                    <img id="imgSd" src="" alt="SD Thumbnail">
+                </div>
+                <div class="card-info">
+                    <div>
+                        <h3>Standard Quality</h3>
+                        <p>640x480</p>
+                    </div>
+                    <a href="#" id="dlSd" class="btn-download" target="_blank" download="thumbnail_sd.jpg">
+                        <i class="ph ph-download-simple"></i> Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const input = document.getElementById('videoInput');
+        const btn = document.getElementById('fetchBtn');
+        const results = document.getElementById('results');
+        const errorMsg = document.getElementById('errorMsg');
+        
+        const imgHd = document.getElementById('imgHd');
+        const dlHd = document.getElementById('dlHd');
+        const imgSd = document.getElementById('imgSd');
+        const dlSd = document.getElementById('dlSd');
+
+        function extractVideoID(url) {
+            const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const match = url.match(regExp);
+            return (match && match[1].length === 11) ? match[1] : false;
+        }
+
+        async function fetchThumbnail() {
+            const url = input.value.trim();
+            if (!url) return;
+
+            const videoId = extractVideoID(url);
+            
+            if (!videoId) {
+                errorMsg.style.display = 'block';
+                results.style.display = 'none';
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+
+            // Construct URLs
+            const maxResUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            const hqResUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+            const sdResUrl = `https://img.youtube.com/vi/${videoId}/sddefault.jpg`;
+
+            // Max res might not exist for all videos, so we attempt to load it, fallback to hq
+            imgHd.src = maxResUrl;
+            dlHd.href = maxResUrl;
+            
+            imgHd.onerror = () => {
+                imgHd.src = hqResUrl;
+                dlHd.href = hqResUrl;
+            };
+
+            imgSd.src = sdResUrl;
+            dlSd.href = sdResUrl;
+
+            results.style.display = 'flex';
+        }
+
+        btn.addEventListener('click', fetchThumbnail);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') fetchThumbnail();
+        });
+    </script>
+</body>
+</html>

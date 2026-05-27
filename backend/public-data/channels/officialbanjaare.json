@@ -1,0 +1,46 @@
+{
+  "type": "channel",
+  "handle": "officialbanjaare",
+  "sourceInput": "@officialBanjaare",
+  "sourceUrl": "https://www.youtube.com/@officialBanjaare/videos",
+  "updatedAt": "2026-05-27T19:18:23.058Z",
+  "count": 4,
+  "videos": [
+    {
+      "videoId": "oafxkMv4xnc",
+      "title": "Bairan – Animated Love Story | Banjaare (Official Video)",
+      "url": "https://www.youtube.com/watch?v=oafxkMv4xnc",
+      "thumbnail": "https://i.ytimg.com/vi/oafxkMv4xnc/mqdefault.jpg",
+      "duration": 151,
+      "uploadDate": null,
+      "viewCount": null
+    },
+    {
+      "videoId": "N1pzk3LTOJo",
+      "title": "Banjaare - Aashiq Awara Feat. Rajkumari (Official Music Video) | Dipsne",
+      "url": "https://www.youtube.com/watch?v=N1pzk3LTOJo",
+      "thumbnail": "https://i.ytimg.com/vi/N1pzk3LTOJo/mqdefault.jpg",
+      "duration": 139,
+      "uploadDate": null,
+      "viewCount": null
+    },
+    {
+      "videoId": "2UIlLUqb2hI",
+      "title": "Banjaare - Different Talk [lyrical video]",
+      "url": "https://www.youtube.com/watch?v=2UIlLUqb2hI",
+      "thumbnail": "https://i.ytimg.com/vi/2UIlLUqb2hI/mqdefault.jpg",
+      "duration": 140,
+      "uploadDate": null,
+      "viewCount": null
+    },
+    {
+      "videoId": "D37PDb69XJY",
+      "title": "Banjaare - Suits With Me(Offical Audio) [feat. Bulbul]",
+      "url": "https://www.youtube.com/watch?v=D37PDb69XJY",
+      "thumbnail": "https://i.ytimg.com/vi/D37PDb69XJY/mqdefault.jpg",
+      "duration": 141,
+      "uploadDate": null,
+      "viewCount": null
+    }
+  ]
+}

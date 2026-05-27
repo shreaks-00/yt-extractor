@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free YouTube Channel Extractor Tool</title>
-    <meta name="description" content="Extract all public YouTube channel videos, metadata, and URLs instantly from any channel. Export results as TXT or JSON." />
-    <meta name="keywords" content="extract youtube channel videos,youtube channel scraper,export youtube channel videos,youtube channel url extractor" />
-    <link rel="canonical" href="/channel-extractor" />
+    <title>Free YouTube Comments Exporter Tool</title>
+    <meta name="description" content="Export YouTube comments and replies from any public video. Download comments instantly for research, moderation, and content analysis." />
+    <meta name="keywords" content="youtube comments exporter,export youtube comments,youtube comment scraper" />
+    <link rel="canonical" href="/comments-exporter" />
     <meta name="google-site-verification" content="3_CeHzeBYpq9Q8B7JQko2BYovDz8vvmIU0aniYkECk0" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -14,7 +14,7 @@
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "YouTube Channel Extractor",
+        "name": "YouTube Comments Exporter",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Web",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
@@ -27,26 +27,26 @@
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "How do I extract all videos from a YouTube channel?",
+            "name": "How do I export YouTube comments from a video?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Paste a YouTube channel URL or handle (like @MrBeast) and click Extract. The tool lists all public uploads and lets you export URLs and metadata."
+              "text": "Paste the video URL, click Export, then download the comments. This tool extracts public comments for analysis and archiving."
             }
           },
           {
             "@type": "Question",
-            "name": "Can I export YouTube channel videos as a file?",
+            "name": "Does this export replies too?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Export to TXT for a simple URL list or to JSON for structured metadata."
+              "text": "The exporter focuses on top comments and can include replies depending on availability. If a comment thread is collapsed or restricted, it may not fully export."
             }
           },
           {
             "@type": "Question",
-            "name": "Does this work without the YouTube API?",
+            "name": "Is there a limit?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. It extracts publicly available data and does not require you to configure a YouTube Data API key."
+              "text": "To keep the service stable, large videos may be capped per request. You can run multiple exports if needed."
             }
           }
         ]
@@ -831,10 +831,24 @@
     </header>
 
     <main>
+        <section style="max-width: 980px; margin: 0 auto; text-align: center;">
+            <h1 style="font-size: 2.6rem; line-height: 1.2; margin-bottom: 0.8rem;">YouTube Comments Exporter</h1>
+            <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin: 0 auto 2rem auto; max-width: 860px;">
+                Export YouTube comments from any public video to review audience feedback, find insights, and archive discussions. Paste a video URL to extract top comments, then download the results for research or moderation workflows.
+            </p>
+            <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; margin-bottom: 1.2rem;">
+                <a href="/thumbnail-downloader" class="btn-action" style="text-decoration:none;">
+                    <i class="ph ph-image"></i> Thumbnail Downloader
+                </a>
+                <a href="/channel-extractor" class="btn-action" style="text-decoration:none;">
+                    <i class="ph ph-youtube-logo"></i> Channel Extractor
+                </a>
+            </div>
+        </section>
         <div class="search-container" id="searchContainer">
             <div class="input-wrapper">
                 <i class="ph ph-magnifying-glass input-icon"></i>
-                <input type="text" id="channelInput" placeholder="Enter YouTube channel URL or handle to extract all public videos (e.g. https://www.youtube.com/@MrBeast)" autocomplete="off" spellcheck="false">
+                <input type="text" id="channelInput" placeholder="Paste YouTube video URL to export all public comments instantly (e.g. https://www.youtube.com/watch?v=...)" autocomplete="off" spellcheck="false">
                 <button class="btn-extract" id="extractBtn">
                     <span>Extract</span>
                     <i class="ph-bold ph-arrow-right"></i>
@@ -842,7 +856,7 @@
                 </button>
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center;">
-                Instantly extract all public video links from any YouTube channel.
+                Extract comments from videos.
             </p>
         </div>
 
@@ -854,7 +868,7 @@
                         <span id="channelNameDisplay">@channel</span>
                     </div>
                     <span style="color: var(--text-muted); font-size: 0.95rem;">
-                        <span id="videoCountDisplay">0</span> videos found
+                        <span id="videoCountDisplay">0</span> comments found
                     </span>
                 </div>
                 <div class="actions">
@@ -879,24 +893,14 @@
     <div class="landing-content">
         <!-- Hero text injected in the header context -->
         <div style="text-align: center; max-width: 900px; margin: 0 auto -2rem auto; padding: 0 1.5rem;">
-            <h1 style="font-size: 3rem; line-height: 1.15; margin-bottom: 1rem;">YouTube Channel Extractor</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.2rem;">
-                Extract YouTube channel videos in seconds. Paste a channel handle like <strong>@MrBeast</strong> or a channel URL to export every public upload with titles, thumbnails, and video URLs.
+            <h2 style="font-size: 2.4rem; line-height: 1.2; margin-bottom: 1rem;">Export YouTube Comments for Research, Moderation, and Insights</h2>
+            <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.2rem;">
+                This YouTube comments exporter extracts public comments from a video so you can analyze sentiment, collect FAQs, and audit audience feedback. Paste a video URL above, export the results, and save them as TXT or JSON for your workflow.
             </p>
-            <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
-                This YouTube channel scraper is built for speed and export: copy links, download TXT, or export JSON for analysis, research, and content audits.
+            <p style="color: var(--text-muted); font-size: 1.02rem; line-height: 1.7; margin-bottom: 2rem;">
+                Pair it with the <a href="/tags-exporter" style="color:var(--secondary); text-decoration:none;">Tags Exporter</a> and
+                <a href="/description-exporter" style="color:var(--secondary); text-decoration:none;">Description Exporter</a> to build complete video-level datasets.
             </p>
-            <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap;">
-                <a href="/playlist-extractor" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-list-dashes"></i> Playlist Extractor
-                </a>
-                <a href="/thumbnail-downloader" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-image"></i> Thumbnail Downloader
-                </a>
-                <a href="/comments-exporter" class="btn-action" style="text-decoration:none;">
-                    <i class="ph ph-chats-circle"></i> Comments Exporter
-                </a>
-            </div>
         </div>
 
         <section class="social-proof">
@@ -948,21 +952,21 @@
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3>Paste the URL</h3>
-                        <p>Enter any public YouTube channel handle (like @channel) or full URL into the search bar.</p>
+                        <p>Paste a public YouTube video URL into the input at the top of the page.</p>
                     </div>
                 </div>
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
                         <h3>Click Extract</h3>
-                        <p>Our secure backend executes real-time fetches against the channel's entire video library.</p>
+                        <p>The exporter fetches public comments and formats them into a clean, readable list.</p>
                     </div>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <h3>Export Data</h3>
-                        <p>Copy the generated links or download the complete metadata in your preferred format instantly.</p>
+                        <p>Copy results to clipboard or download a TXT/JSON export for analysis, archiving, or moderation.</p>
                     </div>
                 </div>
             </div>
@@ -988,6 +992,38 @@
                     <p>Pull extensive lists of specific video URLs for bulk outreach, targeted ad placements, or content auditing.</p>
                 </div>
             </div>
+        </section>
+
+        <section class="landing-section">
+            <h2>What You Can Do With Exported Comments</h2>
+            <p style="color: var(--text-muted); line-height: 1.7; max-width: 900px; margin: 0 auto 1.2rem auto; text-align:center;">
+                Exporting YouTube comments turns a messy comment section into a clean dataset you can search, filter, and reuse. Whether you’re doing content research or customer discovery, comments contain direct language your audience uses — questions, objections, feature requests, and emotional reactions. This is why comment exports are useful for SEO, marketing, and product teams: the words are not “invented keywords”, they’re real user intent.
+            </p>
+            <div class="features-grid" style="max-width: 1100px; margin: 0 auto;">
+                <div class="feature-card">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <h3>Find repeated questions</h3>
+                    <p>Identify common questions to create better FAQs, pinned comments, and follow-up videos that match search intent.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ph ph-chart-line-up"></i>
+                    <h3>Spot content opportunities</h3>
+                    <p>Comments often reveal what viewers wish you covered. Use exports to discover long-tail topics and tutorial ideas.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ph ph-shield-check"></i>
+                    <h3>Moderation + auditing</h3>
+                    <p>Save evidence of harmful threads, track patterns across videos, and keep an archive for compliance or brand safety.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ph ph-squares-four"></i>
+                    <h3>Build video datasets</h3>
+                    <p>Combine comments with tags and descriptions to create richer video pages and improve internal linking across your site.</p>
+                </div>
+            </div>
+            <p style="color: var(--text-muted); line-height: 1.7; max-width: 900px; margin: 1.3rem auto 0 auto; text-align:center;">
+                Next steps: extract the video’s <a href="/tags-exporter" style="color:var(--secondary); text-decoration:none;">tags</a> and <a href="/description-exporter" style="color:var(--secondary); text-decoration:none;">description</a>, then link to the public <code style="color:#fff;">/video/&lt;id&gt;</code> page for an indexable archive.
+            </p>
         </section>
 
         <section class="landing-section">
@@ -1032,13 +1068,9 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        const API_URL = '/api/channel';
-        const HEALTH_URL = '/health';
 
-        // Wake up the Render backend immediately on page load (free tier goes to sleep)
-        (function pingBackend() {
-            fetch(HEALTH_URL, { method: 'GET', mode: 'cors' }).catch(() => {});
-        })();
+        const API_URL = '/api/comments';
+        const HEALTH_URL = '/health';
 
         class ExtractorApp {
             constructor() {
@@ -1051,63 +1083,22 @@
                 this.searchContainer = document.getElementById('searchContainer');
                 this.resultsContainer = document.getElementById('resultsContainer');
                 this.videoGrid = document.getElementById('videoGrid');
-                
-                this.channelDisplay = document.getElementById('channelNameDisplay');
-                this.countDisplay = document.getElementById('videoCountDisplay');
                 this.toastContainer = document.getElementById('toastContainer');
-
+                
                 this.copyAllBtn = document.getElementById('copyAllBtn');
                 this.saveTxtBtn = document.getElementById('saveTxtBtn');
                 this.saveJsonBtn = document.getElementById('saveJsonBtn');
 
                 this.currentData = null;
-                this.serverReady = false;
-
                 this.bindEvents();
-                this.checkServerReady();
-                this.restoreCachedResults();
-            }
-
-            async checkServerReady() {
-                try {
-                    const res = await fetch(HEALTH_URL, { method: 'GET', mode: 'cors' });
-                    if (res.ok) this.serverReady = true;
-                } catch (_) {
-                    this.serverReady = false;
-                }
-            }
-
-            // Restore the channel name if the user accidentally refreshes the page
-            restoreCachedResults() {
-                try {
-                    const cachedName = sessionStorage.getItem('ytExtractorLastChannel');
-                    if (cachedName) {
-                        this.input.value = cachedName;
-                    }
-                } catch (_) {}
             }
 
             bindEvents() {
                 this.extractBtn.addEventListener('click', () => this.handleExtract());
-                this.input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.handleExtract();
-                });
-
-                // Header actions
-                this.copyAllBtn.addEventListener('click', () => this.copyAllLinks());
-                this.saveTxtBtn.addEventListener('click', () => this.downloadTxt());
-                this.saveJsonBtn.addEventListener('click', () => this.exportJson());
-
-                // Individual card actions (using event delegation)
-                this.videoGrid.addEventListener('click', (e) => {
-                    const copyBtn = e.target.closest('.copy');
-                    if (copyBtn) {
-                        const url = copyBtn.getAttribute('data-url');
-                        if (url) {
-                            this.copyToClipboard(url);
-                        }
-                    }
-                });
+                this.input.addEventListener('keypress', (e) => { if (e.key === 'Enter') this.handleExtract(); });
+                this.copyAllBtn.addEventListener('click', () => this.copyToClipboard((this.currentData.comments || []).map(c => c.author + ": " + c.text).join('\n\n')));
+                this.saveTxtBtn.addEventListener('click', () => this.downloadFile((this.currentData.comments || []).map(c => c.author + ": " + c.text).join('\n\n'), 'comments.txt', 'text/plain'));
+                this.saveJsonBtn.addEventListener('click', () => this.downloadFile(JSON.stringify(this.currentData, null, 2), 'metadata.json', 'application/json'));
             }
 
             setLoading(isLoading) {
@@ -1126,18 +1117,8 @@
             showToast(message, type = 'info') {
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
-                
-                let iconClass = 'ph-info';
-                if (type === 'success') iconClass = 'ph-check-circle';
-                if (type === 'error') iconClass = 'ph-warning-circle';
-
-                toast.innerHTML = `
-                    <i class="ph-fill ${iconClass}"></i>
-                    <span>${message}</span>
-                `;
-
+                toast.innerHTML = `<i class="ph-fill ${type === 'success' ? 'ph-check-circle' : 'ph-warning-circle'}"></i><span>${message}</span>`;
                 this.toastContainer.appendChild(toast);
-
                 setTimeout(() => {
                     toast.style.animation = 'slideOut 0.3s ease forwards';
                     setTimeout(() => toast.remove(), 300);
@@ -1146,117 +1127,68 @@
 
             async handleExtract() {
                 const query = this.input.value.trim();
-                if (!query) {
-                    this.showToast('Please enter a channel name or URL', 'error');
-                    this.input.focus();
-                    return;
-                }
+                if (!query) { this.showToast('Please enter a YouTube video URL', 'error'); return; }
 
                 this.setLoading(true);
                 this.resultsContainer.style.display = 'none';
-
-                // Show a warming-up notice if backend might be cold
-                const warmupToast = setTimeout(() => {
-                    this.showToast('⏳ Server is waking up, please wait a moment...', 'info');
-                }, 8000);
-
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 150000); // 150s timeout
 
                 try {
                     const response = await fetch(API_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ url: query }),
-                        signal: controller.signal
+                        body: JSON.stringify({ url: query })
                     });
-
-                    clearTimeout(warmupToast);
-                    clearTimeout(timeoutId);
-
                     const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Failed to extract videos');
-                    }
+                    if (!response.ok) throw new Error(data.error || 'Failed to extract comments');
 
                     this.currentData = data;
                     this.renderResults(data);
-                    // Cache just the channel name so a page refresh doesn't lose their input
-                    try { sessionStorage.setItem('ytExtractorLastChannel', query); } catch (_) {}
-                    this.showToast(`Successfully extracted ${data.videos.length} videos!`, 'success');
-                    
-                    // Layout change
+                    this.showToast('Comments extracted successfully!', 'success');
                     this.searchContainer.classList.add('active');
-
                 } catch (error) {
-                    clearTimeout(warmupToast);
-                    clearTimeout(timeoutId);
-                    if (error.name === 'AbortError') {
-                        this.showToast('Request timed out. The server may be busy — please try again.', 'error');
-                    } else {
-                        this.showToast(error.message, 'error');
-                    }
+                    this.showToast(error.message, 'error');
                 } finally {
                     this.setLoading(false);
                 }
             }
 
             renderResults(data) {
-                this.channelDisplay.textContent = data.channel;
-                this.countDisplay.textContent = data.count;
+                document.getElementById('channelNameDisplay').textContent = data.title || 'Unknown Title';
+                document.getElementById('videoCountDisplay').textContent = data.commentCount || 0;
                 
-                this.videoGrid.innerHTML = data.videos.map((vid, index) => `
-                    <div class="video-card" style="animation-delay: ${index * 0.05}s">
-                        <div class="thumbnail-container">
-                            <img src="${vid.thumbnail || 'https://via.placeholder.com/320x180?text=No+Thumbnail'}" alt="${vid.title}" class="thumbnail" loading="lazy">
-                        </div>
-                        <div class="video-info">
-                            <h3 class="video-title" title="${vid.title}">${vid.title}</h3>
-                            <div class="card-actions">
-                                <button class="btn-icon copy" data-url="${vid.url}" title="Copy URL">
-                                    <i class="ph ph-copy"></i> Copy
-                                </button>
-                                <a href="${vid.url}" target="_blank" rel="noopener noreferrer" class="btn-icon open" style="text-decoration:none;" title="Open in YouTube">
-                                    <i class="ph ph-arrow-square-out"></i> Open
-                                </a>
-                                <a href="https://cobalt.tools" target="_blank" rel="noopener noreferrer" class="btn-icon download" style="text-decoration:none;" title="Download Video" onclick="navigator.clipboard.writeText('${vid.url}')">
-                                    <i class="ph ph-download-simple"></i> Download
-                                </a>
+                // Switch the videoGrid container to a column flexbox to stack comments cleanly
+                this.videoGrid.style.display = 'flex';
+                this.videoGrid.style.flexDirection = 'column';
+                this.videoGrid.style.gap = '1rem';
+                this.videoGrid.style.width = '100%';
+
+                if (data.comments && data.comments.length > 0) {
+                    this.videoGrid.innerHTML = data.comments.map(c => `
+                        <div style="background: rgba(255, 255, 255, 0.03); padding: 1.25rem 1.5rem; border-radius: 12px; border: 1px solid var(--border); transition: border-color 0.2s;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <strong style="color: var(--secondary); font-size: 0.95rem;">${c.author || 'Anonymous'}</strong>
+                                <span style="color: var(--text-muted); font-size: 0.8rem;">${c.timeText || ''}</span>
+                            </div>
+                            <p style="white-space: pre-wrap; font-size: 0.95rem; color: var(--text-main); line-height: 1.5; margin: 0;">${c.text || ''}</p>
+                            <div style="display: flex; gap: 1rem; margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted); align-items: center;">
+                                <span>👍 ${c.likeCount || '0'}</span>
+                                ${c.isHearted ? '<span style="color: #ff007f;">❤️ Creator Hearted</span>' : ''}
                             </div>
                         </div>
-                    </div>
-                `).join('');
-
+                    `).join('');
+                } else {
+                    this.videoGrid.innerHTML = `<div style="background: var(--surface-color); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); width: 100%; text-align: center; color: var(--text-muted);">No comments available for this video.</div>`;
+                }
                 this.resultsContainer.style.display = 'flex';
             }
 
             async copyToClipboard(text) {
                 try {
                     await navigator.clipboard.writeText(text);
-                    this.showToast('Link copied to clipboard!', 'success');
+                    this.showToast('Copied to clipboard!', 'success');
                 } catch (err) {
                     this.showToast('Failed to copy text', 'error');
                 }
-            }
-
-            copyAllLinks() {
-                if (!this.currentData) return;
-                const links = this.currentData.videos.map(v => v.url).join('\n');
-                this.copyToClipboard(links);
-                this.showToast(`Copied ${this.currentData.videos.length} links!`, 'success');
-            }
-
-            downloadTxt() {
-                if (!this.currentData) return;
-                const content = this.currentData.videos.map(v => `${v.title}\n${v.url}\n`).join('\n');
-                this.downloadFile(content, `${this.currentData.channel}_links.txt`, 'text/plain');
-            }
-
-            exportJson() {
-                if (!this.currentData) return;
-                const content = JSON.stringify(this.currentData, null, 2);
-                this.downloadFile(content, `${this.currentData.channel}_data.json`, 'application/json');
             }
 
             downloadFile(content, filename, contentType) {
@@ -1265,16 +1197,13 @@
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = filename;
-                document.body.appendChild(a);
                 a.click();
-                document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 this.showToast(`Downloaded ${filename}`, 'success');
             }
         }
-
-        // Initialize App
         const app = new ExtractorApp();
+
     </script>
 </body>
 </html>
