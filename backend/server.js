@@ -92,13 +92,21 @@ function extractVideoId(url) {
 }
 
 function resolveChannelUrl(input, suffix = '/videos') {
-  if (/^(www\.)?youtube\.com/i.test(input)) input = 'https://' + input;
+  if (/^(www\.)?youtube\.com/i.test(input) || /^youtu\.be/i.test(input)) {
+    if (!input.startsWith('http')) input = 'https://' + input;
+  }
   if (input.startsWith('http')) {
     try {
       const u = new URL(input);
+      if (u.hostname === 'youtu.be' || u.pathname === '/watch' || u.pathname.startsWith('/embed') || u.pathname.match(/^\/(v|shorts)\//)) {
+        throw new Error('Please provide a channel URL or handle, not a video URL.');
+      }
       let p = u.pathname.replace(/\/(videos|shorts|streams)$/, '');
       return `https://www.youtube.com${p}${suffix}`;
-    } catch (_) { throw new Error('Invalid URL'); }
+    } catch (err) { 
+      if (err.message.includes('channel URL')) throw err;
+      throw new Error('Invalid URL'); 
+    }
   }
   if (input.startsWith('@')) return `https://www.youtube.com/${input}${suffix}`;
   return `https://www.youtube.com/@${input}${suffix}`;
@@ -355,7 +363,7 @@ app.post('/api/video-details', async (req, res) => {
 
 // ─── API: Comments Exporter ───────────────────────────────────────────────────
 // POST /api/comments   body: { url }
-// Uses youtube-comment-downloader (more reliable than yt-dlp comments)
+// Uses youtube-comment-downloader (more reliable than yt-dlp comments) with yt-dlp fallback
 app.post('/api/comments', async (req, res) => {
   const raw = sanitize(req.body?.url);
   if (!raw) return res.status(400).json({ error: 'Invalid URL.' });
@@ -370,15 +378,45 @@ app.post('/api/comments', async (req, res) => {
 
     const comments = [];
     const MAX = 200; // cap at 200 comments
-    for await (const comment of generator) {
-      comments.push({
-        author: comment.author,
-        text: comment.text,
-        likeCount: comment.votes?.simpleText || '0',
-        timeText: comment.time,
-        isHearted: comment.heart || false,
-      });
-      if (comments.length >= MAX) break;
+    
+    try {
+      for await (const comment of generator) {
+        comments.push({
+          author: comment.author,
+          text: comment.text,
+          likeCount: comment.votes?.simpleText || comment.votes || '0',
+          timeText: comment.time,
+          isHearted: comment.heart || false,
+        });
+        if (comments.length >= MAX) break;
+      }
+    } catch (e) {
+      console.error('youtube-comment-downloader error:', e);
+    }
+
+    // Fallback to yt-dlp if no comments were found
+    if (comments.length === 0) {
+      try {
+        const fallbackData = await new Promise((resolve, reject) => {
+          exec(`yt-dlp -J --write-comments --playlist-items 0 --extractor-args "youtube:max-comments=200,200,200,0;comment_sort=top" --no-warnings "https://www.youtube.com/watch?v=${videoId}"`, { timeout: 60000, maxBuffer: 10 * 1024 * 1024 }, (err, stdout) => {
+            if (err) return reject(err);
+            try { resolve(JSON.parse(stdout)); } catch (e) { reject(e); }
+          });
+        });
+        if (fallbackData.comments && fallbackData.comments.length > 0) {
+          for (const c of fallbackData.comments.slice(0, MAX)) {
+            comments.push({
+              author: c.author || 'Anonymous',
+              text: c.text,
+              likeCount: c.like_count || '0',
+              timeText: c._time_text || c.time_text || '',
+              isHearted: c.is_favorited || false,
+            });
+          }
+        }
+      } catch (e) {
+        console.error('yt-dlp comment fallback failed:', e.message);
+      }
     }
 
     // Get video title from yt-dlp quickly
