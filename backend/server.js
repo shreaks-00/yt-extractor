@@ -210,7 +210,54 @@ function ytdlpFlatList(url, timeout = 180000) {
   });
 }
 
-function ytdlpFullJSON(url, timeout = 120000) {
+async function scrapeVideoDetails(url) {
+  const videoId = extractVideoId(url);
+  if (!videoId) throw new Error('Could not extract video ID');
+  const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+  const res = await fetch(watchUrl, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept-Language': 'en-US,en;q=0.9',
+    }
+  });
+  if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+  const html = await res.text();
+  if (!html.includes('ytInitialPlayerResponse')) {
+    throw new Error('ytInitialPlayerResponse not found in HTML');
+  }
+  const part = html.split('ytInitialPlayerResponse = ')[1];
+  if (!part) throw new Error('Failed to parse page data structure');
+  
+  let jsonStr = part.split(';</script>')[0];
+  if (jsonStr.includes(';var ')) {
+    jsonStr = jsonStr.split(';var ')[0];
+  }
+  const data = JSON.parse(jsonStr);
+  const details = data.videoDetails;
+  if (!details) throw new Error('Video details not found in page data');
+  
+  return {
+    id: details.videoId,
+    title: details.title,
+    description: details.shortDescription || '',
+    tags: details.keywords || [],
+    thumbnail: details.thumbnail?.thumbnails?.[details.thumbnail.thumbnails.length - 1]?.url || '',
+    view_count: details.viewCount ? parseInt(details.viewCount, 10) : 0,
+    like_count: null,
+    upload_date: null,
+    uploader: details.author,
+    duration: details.lengthSeconds ? parseInt(details.lengthSeconds, 10) : 0,
+  };
+}
+
+async function ytdlpFullJSON(url, timeout = 120000) {
+  try {
+    const scraped = await scrapeVideoDetails(url);
+    if (scraped) return scraped;
+  } catch (err) {
+    console.warn('Scraping fallback failed, trying yt-dlp:', err.message);
+  }
+
   return new Promise((resolve, reject) => {
     // Use -J for full single-video metadata (description, tags, etc.)
     exec(`yt-dlp -J --no-warnings "${url}"`, { timeout, maxBuffer: 50 * 1024 * 1024 }, (err, stdout, stderr) => {
@@ -223,6 +270,7 @@ function ytdlpFullJSON(url, timeout = 120000) {
     });
   });
 }
+
 
 function mapEntry(entry) {
   const id = entry.id || '';
