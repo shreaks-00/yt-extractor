@@ -214,14 +214,13 @@ async function scrapeVideoDetails(url) {
   const videoId = extractVideoId(url);
   if (!videoId) throw new Error('Could not extract video ID');
   const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
-  const res = await fetch(watchUrl, {
+  const res = await axios.get(watchUrl, {
     headers: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       'Accept-Language': 'en-US,en;q=0.9',
     }
   });
-  if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-  const html = await res.text();
+  const html = res.data;
   if (!html.includes('ytInitialPlayerResponse')) {
     throw new Error('ytInitialPlayerResponse not found in HTML');
   }
