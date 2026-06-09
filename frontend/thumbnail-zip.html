@@ -1147,7 +1147,14 @@
                     });
                     
                     if (!response.ok) {
-                        const data = await response.json();
+                        const rawText = await response.text();
+                        let data;
+                        try {
+                            data = JSON.parse(rawText);
+                        } catch (_) {
+                            const preview = rawText.slice(0, 120).replace(/\s+/g, ' ').trim();
+                            throw new Error(`Server returned unexpected response: ${preview}`);
+                        }
                         throw new Error(data.error || 'Failed to generate ZIP');
                     }
 
