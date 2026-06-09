@@ -343,6 +343,7 @@ app.post('/api/video-details', async (req, res) => {
 
   try {
     const data = await ytdlpFullJSON(raw);
+    if (!data) return res.status(500).json({ error: 'Failed to fetch video metadata: empty response.' });
     return res.json({
       success: true,
       videoId: data.id,

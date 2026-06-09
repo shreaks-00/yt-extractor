@@ -1174,7 +1174,16 @@
                     clearTimeout(warmupToast);
                     clearTimeout(timeoutId);
 
-                    const data = await response.json();
+                    // Safely parse JSON — the server may return HTML/text on errors
+                    let data;
+                    const rawText = await response.text();
+                    try {
+                        data = JSON.parse(rawText);
+                    } catch (_) {
+                        // Non-JSON response (e.g. Render error page or yt-dlp plain text)
+                        const preview = rawText.slice(0, 120).replace(/\s+/g, ' ').trim();
+                        throw new Error(`Server returned an unexpected response: ${preview}`);
+                    }
 
                     if (!response.ok) {
                         throw new Error(data.error || 'Failed to extract videos');
